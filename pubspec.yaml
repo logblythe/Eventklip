@@ -1,0 +1,84 @@
+name: eventklip
+description: Eventklip App
+version: 1.0.0+2
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.0
+  shared_preferences: 0.5.12+4
+  provider:
+  nb_utils: 3.2.11+4
+
+  image_picker_gallery_camera:
+  flutter_slidable:
+  video_player: 1.0.1
+  cached_video_player:
+    git:
+      url: https://github.com/Suman085/flutter_cached_video_player.git
+  cached_network_image: 2.3.3
+  shimmer: 1.1.2
+  freezed: 0.10.9
+  dio: 3.0.8
+  dartz: 0.9.1
+  timeago: 2.0.28
+  intl: 0.16.1
+  flutter_html: 1.1.1
+  url_launcher: 5.7.10
+  #dependency injection
+  get_it: 4.0.0
+  injectable: 1.0.4
+  flutter_countdown_timer: 1.5.0
+  screen: 0.0.5
+  flutter_secure_storage: 3.3.5
+  colorful_safe_area: 0.2.1
+
+dev_dependencies:
+  #flutter packages pub run build_runner watch
+  auto_route_generator: 0.6.7
+  injectable_generator:
+  flutter_launcher_icons: "^0.8.0"
+  build_runner:
+
+  flutter_test:
+    sdk: flutter
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/eventklipround.png"
+
+  flutter_localizations:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/icons/
+    - assets/images/
+    - assets/icons/ic_fb.png
+    - assets/icons/ic_google.png
+    - lang/en.json
+
+  fonts:
+    - family: Regular
+      fonts:
+        - asset: assets/fonts/googlesansregular.ttf
+
+    - family: Medium
+      fonts:
+        - asset: assets/fonts/googlesansmedium.ttf
+
+    - family: Semibold
+      fonts:
+        - asset: assets/fonts/googlesansmedium.ttf
+
+    - family: Bold
+      fonts:
+        - asset: assets/fonts/googlesansebold.ttf
