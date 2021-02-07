@@ -16,11 +16,19 @@ import 'package:eventklip/screens/terms_conditions_screen.dart';
 import 'package:eventklip/utils/app_localizations.dart';
 import 'package:eventklip/view_models/app_state.dart';
 import 'package:eventklip/utils/app_theme.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  StripePayment.setOptions(
+    StripeOptions(
+        publishableKey:
+            "pk_test_51IGRslEpxz6XvV1GadOZy6yXUEoSQMv8zAl37YzbpEIZK65kLONUcilaejzXT1Rhspj8jQQBhhFFn14jU6jVr5oQ00sgwMNsNI",
+        merchantId: "Test",
+        androidPayMode: 'test'),
+  );
   runApp(MyApp());
 }
 
@@ -29,7 +37,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (_) => EventklipAppState("en", isDarkMode: true),
-        child: Consumer<EventklipAppState>(builder: (context, provider, builder) {
+        child:
+            Consumer<EventklipAppState>(builder: (context, provider, builder) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle(
               statusBarColor: Colors.black12,
@@ -53,17 +62,18 @@ class MyApp extends StatelessWidget {
                 AppLocalizations.delegate,
               ],
               localeResolutionCallback: (locale, supportedLocales) {
-                return Locale(
-                    provider.selectedLanguageCode);
+                return Locale(provider.selectedLanguageCode);
               },
               locale: provider.locale,
-              themeMode: provider.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+              themeMode:
+                  provider.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
               home: SplashScreen(),
               routes: <String, WidgetBuilder>{
                 OnBoardingScreen.tag: (BuildContext context) =>
                     OnBoardingScreen(),
                 SignInScreen.tag: (BuildContext context) => SignInScreen(),
-                ChangePasswordScreen.tag: (BuildContext context) => ChangePasswordScreen(),
+                ChangePasswordScreen.tag: (BuildContext context) =>
+                    ChangePasswordScreen(),
                 HomeScreen.tag: (BuildContext context) => HomeScreen(),
                 AccountSettingsScreen.tag: (BuildContext context) =>
                     AccountSettingsScreen(),

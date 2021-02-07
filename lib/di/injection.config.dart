@@ -13,6 +13,7 @@ import '../services/app/video_controller_service.dart';
 import '../api/client.dart';
 import '../api/movie_api.dart';
 import '../services/movie_service.dart';
+import '../services/stripe_service.dart';
 
 /// adds generated dependencies
 /// to the provided [GetIt] instance
@@ -29,6 +30,7 @@ GetIt $initGetIt(
       () => CachedVideoControllerService());
   gh.lazySingleton<MovieApi>(() => MovieApi());
   gh.lazySingleton<MovieService>(() => MovieService());
+  gh.lazySingleton<StripeService>(() => StripeService());
 
   // Eager singletons must be registered in the right order
   gh.singleton<DioClient>(DioClient());

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:eventklip/screens/home_screen.dart';
 import 'package:eventklip/screens/shared_preferences.dart';
+import 'package:eventklip/services/stripe_service.dart';
 import 'package:eventklip/view_models/app_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

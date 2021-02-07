@@ -1,5 +1,6 @@
 import 'package:eventklip/models/failure.dart';
 import 'package:eventklip/screens/forgot_password_screen.dart';
+import 'package:eventklip/services/stripe_service.dart';
 import 'package:eventklip/utils/resources/colors.dart';
 import 'package:eventklip/view_models/app_state.dart';
 import 'package:flutter/cupertino.dart';
