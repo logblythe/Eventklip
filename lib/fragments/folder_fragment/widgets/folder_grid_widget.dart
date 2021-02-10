@@ -12,12 +12,10 @@ class FolderGridWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       gridDelegate:
-          SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+          SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 1.2),
       itemCount: folders.length,
       itemBuilder: (context, index) {
-        return FolderWidget(folderModel: folders[index])
-            .paddingRight(8)
-            .paddingLeft(8);
+        return FolderWidget(folderModel: folders[index]);
       },
     );
   }

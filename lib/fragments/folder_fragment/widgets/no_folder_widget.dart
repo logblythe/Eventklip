@@ -32,6 +32,8 @@ class NoFolderWidget extends StatelessWidget {
               subtitle ??
                   "You can create a folder by clicking on the '+' button",
               fontSize: ts_medium,
+              maxLine: 4,
+              isCentered: true,
               textColor: colors.textColorPrimary,
             ),
           ),

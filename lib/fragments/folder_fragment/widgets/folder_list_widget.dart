@@ -3,7 +3,6 @@ import 'package:eventklip/models/folder_model.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-
 class FolderListWidget extends StatelessWidget {
   final List<FolderModel> folders;
 
@@ -14,10 +13,7 @@ class FolderListWidget extends StatelessWidget {
     return ListView.builder(
       itemCount: folders.length,
       itemBuilder: (context, index) {
-        return FolderWidget(folderModel: folders[index])
-            .paddingBottom(16)
-            .paddingRight(8)
-            .paddingLeft(8);
+        return FolderWidget(folderModel: folders[index]);
       },
     );
   }

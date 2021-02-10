@@ -11,7 +11,7 @@ class SubFoldersFragment extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          FolderWidget(folderModel: model.selectedFolder),
+
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.max,

@@ -21,6 +21,7 @@ Widget text(context, var text,
     var isCentered = false,
     var maxLine = 1,
     var fontStyle,
+    var height = 1.5,
     var latterSpacing = 0.1,
     var isLongText = false,
     var isJustify = false,
@@ -39,7 +40,7 @@ Widget text(context, var text,
         fontStyle: fontStyle,
         decoration: aDecoration != null ? aDecoration : null,
         fontSize: double.parse(fontSize.toString()).toDouble(),
-        height: 1.5,
+        height: height,
         color: textColor == colors.textColorSecondary
             ? Theme.of(context).textTheme.subtitle2.color
             : textColor.toString().isNotEmpty
@@ -185,6 +186,7 @@ Widget headingWidViewAll(BuildContext context, var titleText, callback,
 Widget appBarLayout(context, text, {darkBackground = true, actions}) {
   return AppBar(
     elevation: 0,
+    centerTitle: false,
     title: toolBarTitle(context, text),
     backgroundColor: darkBackground
         ? Theme.of(context).scaffoldBackgroundColor
