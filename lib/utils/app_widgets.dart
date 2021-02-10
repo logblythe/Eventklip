@@ -20,7 +20,7 @@ Widget text(context, var text,
     var fontFamily = font_regular,
     var isCentered = false,
     var maxLine = 1,
-      var fontStyle,
+    var fontStyle,
     var latterSpacing = 0.1,
     var isLongText = false,
     var isJustify = false,
@@ -34,7 +34,6 @@ Widget text(context, var text,
             : TextAlign.start,
     maxLines: isLongText ? 99 : maxLine,
     overflow: TextOverflow.ellipsis,
-
     style: TextStyle(
         fontFamily: fontFamily,
         fontStyle: fontStyle,
@@ -75,7 +74,7 @@ Widget itemTitle(BuildContext context, var titleText,
 Widget itemSubTitle(BuildContext context, var titleText,
     {var fontFamily = font_regular,
     var fontsize = ts_normal,
-      var maxLines,
+    var maxLines,
     var colorThird = false,
     isLongText = true}) {
   return text(context, titleText,
@@ -183,13 +182,14 @@ Widget headingWidViewAll(BuildContext context, var titleText, callback,
   );
 }
 
-Widget appBarLayout(context, text, {darkBackground = true}) {
+Widget appBarLayout(context, text, {darkBackground = true, actions}) {
   return AppBar(
     elevation: 0,
     title: toolBarTitle(context, text),
     backgroundColor: darkBackground
         ? Theme.of(context).scaffoldBackgroundColor
         : Colors.transparent,
+    actions: actions,
   );
 }
 

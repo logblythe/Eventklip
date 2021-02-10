@@ -1,3 +1,4 @@
+import 'package:eventklip/fragments/folder_fragment/folder_fragment.dart';
 import 'package:eventklip/view_models/home_app_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,8 @@ class HomeScreenState extends State<HomeScreen> {
                   HomeFragment(),
                   SearchFragment(),
                   // MyFilesFragment(),
-                  MoreFragment()
+                  MoreFragment(),
+                  FolderFragment()
                 ],
                 index: _selectedIndex,
               ),
@@ -58,18 +60,13 @@ class HomeScreenState extends State<HomeScreen> {
                 child: AppBottomNavigationBar(
                   backgroundColor: Theme.of(context).splashColor,
                   items: const <AppBottomNavigationBarItem>[
-                    AppBottomNavigationBarItem(
-                      icon: ic_home,
-                    ),
-                    AppBottomNavigationBarItem(
-                      icon: ic_search,
-                    ),
+                    AppBottomNavigationBarItem(icon: ic_home),
+                    AppBottomNavigationBarItem(icon: ic_search),
                     // AppBottomNavigationBarItem(
                     //   icon: ic_folder,
                     // ),
-                    AppBottomNavigationBarItem(
-                      icon: ic_user,
-                    ),
+                    AppBottomNavigationBarItem(icon: ic_user),
+                    AppBottomNavigationBarItem(icon: ic_folder),
                   ],
                   currentIndex: _selectedIndex,
                   unselectedIconTheme: IconThemeData(
@@ -81,7 +78,6 @@ class HomeScreenState extends State<HomeScreen> {
                     setState(() {
                       _selectedIndex = index;
                     });
-
                   },
                   type: AppBottomNavigationBarType.fixed,
                 ),

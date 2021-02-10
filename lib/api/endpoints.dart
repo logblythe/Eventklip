@@ -1,5 +1,6 @@
 class ApiEndPoints {
-  static const BASE_URL = "https://api.boxklip.com/api/";
+  // static const BASE_URL = "https://api.boxklip.com/api/";
+  static const BASE_URL = "https://devapi.boxklip.com/api/";
 
   ///auth and profile
   static const AUTHENTICATE = "${BASE_URL}UserControl/Token";
@@ -22,4 +23,10 @@ class ApiEndPoints {
 
   ///search apis
   static const GET_SEARCH_RESULTS = "${BASE_URL}Clients/SearchTerm";
+
+  ///folder apis
+  static const GET_FOLDERS = "${BASE_URL}Clients/GetFolders";
+  static const CREATE_FOLDER = "${BASE_URL}Clients/CreateFolder";
+
+
 }

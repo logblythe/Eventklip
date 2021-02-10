@@ -16,7 +16,6 @@ void launchScreen(context, String tag, {Object arguments}) {
 }
 
 extension WidgetExtension on Widget {
-
   Visibility withVisibility(
     bool visible, {
     Widget replacement,
@@ -55,8 +54,6 @@ extension WidgetExtension on Widget {
         child: this);
   }
 
-
-
   launch<T>(context) {
     if (this is StatelessWidget || this is StatefulWidget) {
       Navigator.of(context).push(MaterialPageRoute<T>(builder: (_) => this));
@@ -77,7 +74,6 @@ Widget noDataWidget() {
   );
 }
 
-
 Widget errorWidget() {
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -87,6 +83,7 @@ Widget errorWidget() {
     ],
   );
 }
+
 extension StringExtentions on String {
   String validateEMail(context) {
     if (this.isEmpty) {
@@ -101,9 +98,9 @@ extension StringExtentions on String {
 }
 
 extension CommentListExtension on List<Comment> {
-  sortByTimeAscending(){
+  sortByTimeAscending() {
     this?.sort((a, b) =>
-    b.commentedOn.millisecondsSinceEpoch -
+        b.commentedOn.millisecondsSinceEpoch -
         a.commentedOn.millisecondsSinceEpoch);
   }
 }

@@ -11,6 +11,7 @@ import '../api/auth_api.dart';
 import '../services/authentication_service.dart';
 import '../services/app/video_controller_service.dart';
 import '../api/client.dart';
+import '../api/folders_api.dart';
 import '../api/movie_api.dart';
 import '../services/movie_service.dart';
 
@@ -27,6 +28,7 @@ GetIt $initGetIt(
   gh.lazySingleton<AuthenticationService>(() => AuthenticationService());
   gh.lazySingleton<CachedVideoControllerService>(
       () => CachedVideoControllerService());
+  gh.lazySingleton<FoldersApi>(() => FoldersApi());
   gh.lazySingleton<MovieApi>(() => MovieApi());
   gh.lazySingleton<MovieService>(() => MovieService());
 
