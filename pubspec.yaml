@@ -13,6 +13,8 @@ dependencies:
   shared_preferences: 0.5.12+4
   provider:
   nb_utils: 3.2.11+4
+  file_picker: ^2.1.4
+  path_provider: ^1.6.24
   qr_code_scanner: 0.3.3
   flutter_webview_plugin: ^0.3.11
   video_thumbnail: ^0.2.5+1
