@@ -4,6 +4,7 @@ class ApiEndPoints {
 
   ///auth and profile
   static const AUTHENTICATE = "${BASE_URL}UserControl/Token";
+  static const SIGN_UP = "${BASE_URL}UserControl/SignUp";
   static const GET_PROFILE = "${BASE_URL}UserControl/GetProfile";
   static const FORGOT_PASSWORD = "${BASE_URL}UserControl/ForgotPassword";
   static const CHANGE_PASSWORD = "${BASE_URL}UserControl/ChangePassword";

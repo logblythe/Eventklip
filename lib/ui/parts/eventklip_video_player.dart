@@ -2,6 +2,7 @@ import 'package:eventklip/interface/i_videoplayer.dart';
 import 'package:eventklip/ui/parts/video_end_widget.dart';
 import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/constants.dart';
+import 'package:eventklip/utils/duration_formatter.dart';
 import 'package:eventklip/utils/resources/colors.dart';
 import 'package:eventklip/utils/resources/size.dart';
 import 'package:eventklip/view_models/video_detail_state.dart';
@@ -16,14 +17,20 @@ import 'package:screen/screen.dart';
 class EventklipVideoPlayer extends StatefulWidget {
   final videoUrl;
   final videoTitle;
+  final bool disableNavigations;
   final Function(CachedVideoPlayerController) onControllerChanged;
   final Function onVideoEnd;
+  final Function onCurrentPositionChanged;
+  final Function onDurationChanged;
 
   const EventklipVideoPlayer(
       {Key key,
       @required this.videoUrl,
       @required this.videoTitle,
       this.onControllerChanged,
+      this.disableNavigations = false,
+      this.onCurrentPositionChanged,
+      this.onDurationChanged,
       this.onVideoEnd})
       : super(key: key);
 
@@ -47,6 +54,7 @@ class EventklipVideoPlayerState extends State<EventklipVideoPlayer>
   void didUpdateWidget(covariant EventklipVideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.videoUrl != widget.videoUrl) {
+      print("widget.videoUrl ${widget.videoUrl}");
       _initializeAndPlay(widget.videoUrl);
     }
   }
@@ -67,8 +75,7 @@ class EventklipVideoPlayerState extends State<EventklipVideoPlayer>
   }
 
   void _initializeAndPlay(String videoUrl) async {
-    final controller =
-        CachedVideoPlayerController.network("$assetUrl${widget.videoUrl}");
+    final controller = CachedVideoPlayerController.network(widget.videoUrl);
 
     final old = _controller;
     final oldAspectRatio = old?.value?.aspectRatio;
@@ -96,7 +103,8 @@ class EventklipVideoPlayerState extends State<EventklipVideoPlayer>
         });
       });
 
-    widget.onControllerChanged(_controller);
+    if (widget.onControllerChanged != null)
+      widget.onControllerChanged(_controller);
   }
 
   @override
@@ -131,14 +139,17 @@ class EventklipVideoPlayerState extends State<EventklipVideoPlayer>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Consumer<VideoDetailState>(builder: (context, state, child) {
-                    return text(context,
-                            state.currentPosition + " / " + state.duration,
-                            textColor:
-                                Theme.of(context).textTheme.headline6.color)
-                        .paddingLeft(spacing_standard);
-                  }),
-                  IconButton(
+                  text(
+                          context,
+                          durationFormatter(
+                                  _controller.value.position?.inMilliseconds) +
+                              " / " +
+                              durationFormatter(
+                                  _controller.value.duration?.inMilliseconds),
+                          textColor:
+                              Theme.of(context).textTheme.headline6.color)
+                      .paddingLeft(spacing_standard),
+                 widget.disableNavigations ? Container(): IconButton(
                     icon: Icon(_isFullScreen
                         ? Icons.fullscreen_exit
                         : Icons.fullscreen),
@@ -173,8 +184,6 @@ class EventklipVideoPlayerState extends State<EventklipVideoPlayer>
                     ),
                     onPressed: () {
                       setState(() {
-                        print(
-                            "_controller.value.isPlaying, ${_controller.value.isPlaying}");
                         _controller.value.isPlaying
                             ? _controller.pause()
                             : _controller.play();
@@ -192,7 +201,7 @@ class EventklipVideoPlayerState extends State<EventklipVideoPlayer>
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    IconButton(
+                    widget.disableNavigations ? Container():IconButton(
                       icon: Icon(
                         Icons.arrow_back,
                         color: Theme.of(context).primaryColor,
@@ -229,7 +238,6 @@ class EventklipVideoPlayerState extends State<EventklipVideoPlayer>
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-
           _controller.value.initialized
               ? AspectRatio(
                   aspectRatio: _controller.value.aspectRatio,
@@ -282,9 +290,13 @@ class EventklipVideoPlayerState extends State<EventklipVideoPlayer>
       return;
     }
     if (mounted) {
-      final provider = Provider.of<VideoDetailState>(context, listen: false);
-      provider.setCurrentPosition(_controller.value.position.inMilliseconds);
-      provider.setDuration(_controller.value.duration.inMilliseconds);
+      if (widget.onCurrentPositionChanged != null) {
+        widget.onCurrentPositionChanged(
+            _controller.value.position.inMilliseconds);
+      }
+      if (widget.onDurationChanged != null) {
+        widget.onDurationChanged(_controller.value.duration.inMilliseconds);
+      }
 
       if (_controller.value.position == _controller.value.duration) {
         onVideoEnd(true);
@@ -332,7 +344,6 @@ class EventklipVideoPlayerState extends State<EventklipVideoPlayer>
 
   void toggleFullScreen() {
     if (isFullScreen) {
-
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     } else {
       SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);

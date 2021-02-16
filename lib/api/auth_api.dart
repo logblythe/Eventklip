@@ -5,6 +5,7 @@ import 'package:eventklip/di/injection.dart';
 import 'package:eventklip/interface/i_auth.dart';
 import 'package:eventklip/models/auth_token.dart';
 import 'package:eventklip/models/basic_server_response.dart';
+import 'package:eventklip/models/sign_up_payload.dart';
 import 'package:eventklip/models/user_profile.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -54,6 +55,14 @@ class AuthApi extends IAuth with ApiHelper {
     final response = await _dioClient.post(ApiEndPoints.CHANGE_PASSWORD,
         data: data,
         options: Options(headers: await getDefaultHeader(authenticate: true)));
+    return returnResponse<BasicServerResponse>(response,
+        modelCreator: (json) => BasicServerResponse.fromJson(json));
+  }
+
+  @override
+  Future signUp(SignUpPayload payload) async {
+    final response =
+        await _dioClient.post(ApiEndPoints.SIGN_UP, data: payload.toJson());
     return returnResponse<BasicServerResponse>(response,
         modelCreator: (json) => BasicServerResponse.fromJson(json));
   }

@@ -13,7 +13,13 @@ dependencies:
   shared_preferences: 0.5.12+4
   provider:
   nb_utils: 3.2.11+4
-
+  qr_code_scanner: 0.3.3
+  flutter_webview_plugin: ^0.3.11
+  video_thumbnail: ^0.2.5+1
+  mime: ^0.9.7
+  sqfentity: ^1.2.3
+  sqfentity_gen: ^1.2.3
+  camera: ^0.7.0+2
   image_picker_gallery_camera:
   flutter_slidable:
   video_player: 1.0.1

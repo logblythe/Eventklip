@@ -1,4 +1,5 @@
 String durationFormatter(int milliSeconds) {
+  if(milliSeconds==null) return "00:00";
   int seconds = milliSeconds ~/ 1000;
   final int hours = seconds ~/ 3600;
   seconds = seconds % 3600;
