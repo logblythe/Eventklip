@@ -7,6 +7,8 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRScanner extends StatefulWidget {
+  QRScanner();
+
   @override
   _QRScannerState createState() => _QRScannerState();
 }
@@ -22,6 +24,8 @@ class _QRScannerState extends State<QRScanner>
   bool hasTorch = false;
   bool completed = false;
 
+  bool isScanned = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,19 +37,33 @@ class _QRScannerState extends State<QRScanner>
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
-      _sendToSignUpScreen();
-    });
-    Future.delayed(Duration(seconds: 5), () {
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-        return SignUpScreen();
-      }));
+      if (!isScanned) {
+        isScanned = true;
+        try {
+          var uri = Uri.parse(scanData.code);
+          final adminId = uri.queryParameters["Id"];
+          if (adminId != "" || adminId != null) {
+            _sendToSignUpScreen(adminId);
+          }
+        } catch (e) {
+          toast("Invalid QR Code");
+          isScanned = false;
+        }
+      }
     });
   }
+  //sign up
+  //get token back
+  //save token,save user type and user,setis logged in
+  //fetch eventDetails from eventId/adminID??
+  //fetch videos and images of user+eventId
+  //fetch q& a
 
-  _sendToSignUpScreen() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-      return QRScanner();
+  _sendToSignUpScreen(String adminId) async {
+    await Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+      return SignUpScreen(adminId: adminId);
     }));
+    isScanned = false;
   }
 
   Widget _renderPreviewWidget() {

@@ -60,7 +60,7 @@ class AuthApi extends IAuth with ApiHelper {
   }
 
   @override
-  Future signUp(SignUpPayload payload) async {
+  Future<BasicServerResponse> signUp(SignUpPayload payload) async {
     final response =
         await _dioClient.post(ApiEndPoints.SIGN_UP, data: payload.toJson());
     return returnResponse<BasicServerResponse>(response,

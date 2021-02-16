@@ -14,6 +14,10 @@ import 'package:eventklip/utils/widget_extensions.dart';
 class SignUpScreen extends StatefulWidget {
   static String tag = '/SignUpScreen';
 
+  final adminId;
+
+  const SignUpScreen({Key key, this.adminId}) : super(key: key);
+
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
@@ -57,9 +61,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     keyString(context, "sign_up"),
                     () async {
                       final form = _formKey.currentState;
-                      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) {
-                        return QrUsersHomeScreen();
-                      }), (r) => false);
 
                       if (form.validate()) {
                         form.save();
@@ -72,14 +73,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           final response = await _authService.signUp(
                               SignUpPayload(
                                   email: userEmail,
-                                  adminId: "",
+                                  adminId: widget.adminId,
                                   contact: contact,
+                                  confirmPassword: password,
+                                  password: password,
                                   fullname: name));
+                          if (response.success) {
+                            //setUser Logged in
+                            //save user
+                            //fetch event details
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(builder: (_) {
+                              return QrUsersHomeScreen();
+                            }), (r) => false);
+                          } else {
+                            toast("Something went wrong");
+                          }
                         } catch (e) {
-                          print(e);
+                          toast("Something went wrong $e");
                         } finally {
                           setState(() {
-                            isLoading = true;
+                            isLoading = false;
                           });
                         }
                       }
@@ -103,19 +117,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         children: <Widget>[
           formField(
             context,
-            "hint_email",
-            focusNode: _emailFocusNode,
-            nextFocus: _nameFocusNode,
-            validator: (value) {
-              return value.validateEMail(context);
-            },
-            onSaved: (String value) {
-              userEmail = value;
-            },
-            suffixIcon: Icons.mail_outline,
-          ).paddingBottom(spacing_standard_new),
-          formField(
-            context,
             "name",
             focusNode: _nameFocusNode,
             nextFocus: _contactFocusNode,
@@ -133,6 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             context,
             "phone_no",
             focusNode: _contactFocusNode,
+            nextFocus: _emailFocusNode,
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.done,
             validator: (value) {
@@ -147,14 +149,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ).paddingBottom(spacing_standard_new),
           formField(
             context,
+            "hint_email",
+            focusNode: _emailFocusNode,
+            nextFocus: _passwordFocusNode,
+            validator: (value) {
+              return value.validateEMail(context);
+            },
+            onSaved: (String value) {
+              userEmail = value;
+            },
+            suffixIcon: Icons.mail_outline,
+          ).paddingBottom(spacing_standard_new),
+          formField(
+            context,
             "hint_password",
+            isPassword: true,
             focusNode: _passwordFocusNode,
-            keyboardType: TextInputType.phone,
+            isPasswordVisible: passwordVisible,
             textInputAction: TextInputAction.done,
             onSaved: (String value) {
               password = value;
             },
-            suffixIcon: Icons.work,
+            suffixIconSelector: () {
+              print("Select");
+              setState(() {
+                passwordVisible = !passwordVisible;
+              });
+            },
+            suffixIcon:
+                passwordVisible ? Icons.visibility : Icons.visibility_off,
           ).paddingBottom(spacing_standard_new),
         ],
       ),
