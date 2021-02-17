@@ -1,3 +1,4 @@
+import 'package:eventklip/screens/capture_screen.dart';
 import 'package:eventklip/ui/parts/eventklip_video_player.dart';
 import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/resources/colors.dart';
@@ -37,7 +38,6 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: appBarWidget('Questions',
           showBack: false,
@@ -50,7 +50,7 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
           children: [
             EventklipVideoPlayer(
               videoUrl: question[selectedQuestionIndex].videoUrl,
-              videoTitle: "hehe",
+              videoTitle: question[selectedQuestionIndex].questionLabel,
               disableNavigations: true,
               onVideoEnd: () {
                 setState(() {
@@ -76,12 +76,17 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       if (question[position].isAnswered) {
                         setState(() {
                           selectedQuestionIndex = position;
                         });
-                      } else {}
+                      } else {
+                        await Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (_) {
+                          return CaptureScreen(cameraEnabled: false,);
+                        }));
+                      }
                     },
                     child: Card(
                         child: Padding(

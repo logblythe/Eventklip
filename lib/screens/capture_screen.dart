@@ -7,6 +7,14 @@ import 'package:video_player/video_player.dart';
 import '../main.dart';
 
 class CaptureScreen extends StatefulWidget {
+  final cameraEnabled;
+
+  final videoEnabled;
+
+  const CaptureScreen(
+      {Key key, this.cameraEnabled = true, this.videoEnabled = true})
+      : super(key: key);
+
   @override
   _CaptureScreenState createState() {
     return _CaptureScreenState();
@@ -503,30 +511,35 @@ class _CaptureScreenState extends State<CaptureScreen>
                   !controller.value.isRecordingVideo
               ? Row(
                   children: [
-                    FloatingActionButton(
-                      heroTag: "captureImageVideo",
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0))),
-                        child: const Icon(
-                          Icons.camera_alt,
-                          color: Colors.white,
-                        ),
-                        backgroundColor: Colors.black.withOpacity(0.8),
-                        onPressed: onTakePictureButtonPressed),
+                    widget.cameraEnabled
+                        ? FloatingActionButton(
+                            heroTag: "captureImage",
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12.0))),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                            ),
+                            backgroundColor: Colors.black.withOpacity(0.8),
+                            onPressed: onTakePictureButtonPressed)
+                        : SizedBox.shrink(),
                     Padding(
                       padding: EdgeInsets.only(left: 16),
                     ),
-                    FloatingActionButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0))),
-                        child: const Icon(
-                          Icons.videocam,
-                          color: Colors.white,
-                        ),
-                        backgroundColor: Colors.black.withOpacity(0.8),
-                        onPressed: onVideoRecordButtonPressed),
+                    widget.videoEnabled
+                        ? FloatingActionButton(
+                            heroTag: "captureVideo",
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12.0))),
+                            child: const Icon(
+                              Icons.videocam,
+                              color: Colors.white,
+                            ),
+                            backgroundColor: Colors.black.withOpacity(0.8),
+                            onPressed: onVideoRecordButtonPressed)
+                        : SizedBox.shrink(),
                   ],
                 )
               : Row(

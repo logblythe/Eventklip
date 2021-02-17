@@ -1,7 +1,9 @@
 import 'package:eventklip/di/injection.dart';
 import 'package:eventklip/models/sign_up_payload.dart';
 import 'package:eventklip/screens/qr_users_home_screen.dart';
+import 'package:eventklip/screens/shared_preferences.dart';
 import 'package:eventklip/services/authentication_service.dart';
+import 'package:eventklip/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,6 +81,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   password: password,
                                   fullname: name));
                           if (response.success) {
+
+                            // await SharedPreferenceHelper.setUserProfile(profile);
+                            // await SharedPreferenceHelper.saveToken("");
+                            // await SharedPreferenceHelper.setIsLoggedIn();
+                            // await SharedPreferenceHelper.setUserType(UserType.CUSTOMER);
                             //setUser Logged in
                             //save user
                             //fetch event details

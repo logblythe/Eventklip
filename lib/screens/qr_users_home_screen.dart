@@ -25,53 +25,59 @@ class QrUsersHomeScreenState extends State<QrUsersHomeScreen> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<HomeAppState>(
       create: (_) => HomeAppState(),
-      builder: (context, widget) => WillPopScope(
-          onWillPop: () async {
-            if (_selectedIndex == 0) return true;
-            setState(() {
-              _selectedIndex = 0;
-            });
-            return false;
-          },
-          child: Scaffold(
+      builder: (context, widget) =>
+          WillPopScope(
+              onWillPop: () async {
+                if (_selectedIndex == 0) return true;
+                setState(() {
+                  _selectedIndex = 0;
+                });
+                return false;
+              },
+              child: Scaffold(
 
-              body: IndexedStack(
-                children: [
-                  GalleryFragment(),
-                  QuestionAnswerFragment(),
-                ],
-                index: _selectedIndex,
-              ),
-              bottomNavigationBar: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).splashColor,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey.withOpacity(0.05),
-                          offset: Offset.fromDirection(3, 1),
-                          spreadRadius: 3,
-                          blurRadius: 5)
-                    ]),
-                child: AppBottomNavigationBar(
-                  backgroundColor: Theme.of(context).splashColor,
-                  items: const <AppBottomNavigationBarItem>[
-                    AppBottomNavigationBarItem(icon: ic_video,),
-                    AppBottomNavigationBarItem(icon: ic_user),
-                  ],
-                  currentIndex: _selectedIndex,
-                  unselectedIconTheme: IconThemeData(
-                      color: Theme.of(context).textTheme.headline6.color,
-                      size: 22),
-                  selectedIconTheme: IconThemeData(
-                      color: Theme.of(context).primaryColor, size: 22),
-                  onTap: (index) async {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
-                  type: AppBottomNavigationBarType.fixed,
-                ),
-              ))),
+                  body: Center(child: _selectedIndex == 0
+                      ? GalleryFragment()
+                      : QuestionAnswerFragment(),),
+                  bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+              color: Theme.of(context).splashColor,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey.withOpacity(0.05),
+                    offset: Offset.fromDirection(3, 1),
+                    spreadRadius: 3,
+                    blurRadius: 5)
+              ]),
+      child: AppBottomNavigationBar(
+        backgroundColor: Theme
+            .of(context)
+            .splashColor,
+        items: const <AppBottomNavigationBarItem>[
+          AppBottomNavigationBarItem(icon: ic_video,),
+          AppBottomNavigationBarItem(icon: ic_user),
+        ],
+        currentIndex: _selectedIndex,
+        unselectedIconTheme: IconThemeData(
+            color: Theme
+                .of(context)
+                .textTheme
+                .headline6
+                .color,
+            size: 22),
+        selectedIconTheme: IconThemeData(
+            color: Theme
+                .of(context)
+                .primaryColor, size: 22),
+        onTap: (index) async {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        type: AppBottomNavigationBarType.fixed,
+      ),
+    )))
+    ,
     );
   }
 }

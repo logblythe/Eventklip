@@ -54,7 +54,6 @@ class EventklipVideoPlayerState extends State<EventklipVideoPlayer>
   void didUpdateWidget(covariant EventklipVideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.videoUrl != widget.videoUrl) {
-      print("widget.videoUrl ${widget.videoUrl}");
       _initializeAndPlay(widget.videoUrl);
     }
   }
