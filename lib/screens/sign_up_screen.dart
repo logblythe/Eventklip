@@ -1,5 +1,6 @@
 import 'package:eventklip/di/injection.dart';
 import 'package:eventklip/models/sign_up_payload.dart';
+import 'package:eventklip/models/user_profile.dart';
 import 'package:eventklip/screens/qr_users_home_screen.dart';
 import 'package:eventklip/screens/shared_preferences.dart';
 import 'package:eventklip/services/authentication_service.dart';
@@ -81,23 +82,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   password: password,
                                   fullname: name));
                           if (response.success) {
+                            await SharedPreferenceHelper.setUserProfile(
+                                UserProfile(
+                                    userName:
+                                        response.returnJSONObj.value.userName));
+                            await SharedPreferenceHelper.saveToken(
+                                response.returnJSONObj.value.accessToken);
+                            await SharedPreferenceHelper.setIsLoggedIn();
+                            await SharedPreferenceHelper.setUserType(
+                                UserType.CUSTOMER);
 
-                            // await SharedPreferenceHelper.setUserProfile(profile);
-                            // await SharedPreferenceHelper.saveToken("");
-                            // await SharedPreferenceHelper.setIsLoggedIn();
-                            // await SharedPreferenceHelper.setUserType(UserType.CUSTOMER);
-                            //setUser Logged in
-                            //save user
-                            //fetch event details
                             Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(builder: (_) {
                               return QrUsersHomeScreen();
                             }), (r) => false);
                           } else {
-                            toast("Something went wrong");
+                            toast("Something went wrong ${response.returnMsg}");
                           }
                         } catch (e) {
-                          toast("Something went wrong $e");
+                          toast("Something went wrong");
                         } finally {
                           setState(() {
                             isLoading = false;

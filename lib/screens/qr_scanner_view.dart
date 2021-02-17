@@ -35,9 +35,6 @@ class _QRScannerState extends State<QRScanner>
   }
 
   void _onQRViewCreated(QRViewController controller) {
-    Future.delayed(Duration(seconds: 2),(){
-      _sendToSignUpScreen("4e6deeba-2ef1-4eda-80b1-8ab433261ad9");
-    });
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
       if (!isScanned) {

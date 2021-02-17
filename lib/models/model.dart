@@ -10,7 +10,7 @@ part 'model.g.dart';
 
 
 const MediaTypeVideo = 1;
-const MediaTypeAudio = 2;
+const MediaTypeImage = 2;
 
 const mediaTable = SqfEntityTable(
     tableName: 'media',

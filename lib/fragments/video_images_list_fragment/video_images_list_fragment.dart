@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:camera/camera.dart';
 import 'package:eventklip/fragments/comment_fragment.dart';
 import 'package:eventklip/fragments/video_images_list_fragment/components/context_menu.dart';
 import 'package:eventklip/models/model.dart';
@@ -42,7 +43,14 @@ class _GalleryFragmentState extends State<GalleryFragment> {
         heroTag: "captureImageVideo",
         onPressed: () async {
           await Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-            return CaptureScreen();
+            return CaptureScreen(
+              onImageCaptured: (file) async {
+                saveFile(file, MediaTypeImage);
+              },
+              onVideoCaptured: (file) async {
+                saveFile(file, MediaTypeVideo);
+              },
+            );
           }));
           _fetchAssets();
         },
@@ -54,18 +62,16 @@ class _GalleryFragmentState extends State<GalleryFragment> {
           ContextMenu<MenuItemAssetList>(
               onSelected: (item) {
                 if (item == MenuItemAssetList.SortByDate) {
-                setState(() {
-                  medias.sort((a, b) {
-                    return b.createdAt.millisecondsSinceEpoch -
-                        a.createdAt.millisecondsSinceEpoch;
+                  setState(() {
+                    medias.sort((a, b) {
+                      return b.createdAt.millisecondsSinceEpoch -
+                          a.createdAt.millisecondsSinceEpoch;
+                    });
                   });
-                });
                 } else {
                   setState(() {
-
                     medias.sort((a, b) {
-                      return b.mediaType -
-                          a.mediaType;
+                      return b.mediaType - a.mediaType;
                     });
                   });
                 }
@@ -98,6 +104,19 @@ class _GalleryFragmentState extends State<GalleryFragment> {
       ),
     );
   }
+
+  Future<void> saveFile(XFile file, int type) async {
+    if (file != null) {
+      final media = await Media(
+          mediaType: MediaTypeImage,
+          filename: file.name,
+          createdAt: DateTime.now().toUtc(),
+          isDeleted: false,
+          isUploaded: false,
+          path: file.path)
+          .save();
+    }
+  }
 }
 
 class AssetThumbnail extends StatelessWidget {
@@ -117,7 +136,7 @@ class AssetThumbnail extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (_) {
-              if (asset.mediaType == MediaTypeAudio) {
+              if (asset.mediaType == MediaTypeImage) {
                 // If this is an image, navigate to ImageScreen
                 return ImageScreen(imageFile: File(asset.path));
               } else {
@@ -132,22 +151,22 @@ class AssetThumbnail extends StatelessWidget {
         children: [
           // Wrap the image in a Positioned.fill to fill the space
           Positioned.fill(
-              child: asset.mediaType == MediaTypeAudio
+              child: asset.mediaType == MediaTypeImage
                   ? Image.asset(
-                      asset.path,
-                      fit: BoxFit.fitWidth,
-                    )
+                asset.path,
+                fit: BoxFit.fitWidth,
+              )
                   : FutureBuilder(
-                      future: getThumbData(File(asset.path)),
-                      builder: (BuildContext context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done)
-                          return Image.memory(
-                            snapshot.data,
-                            fit: BoxFit.fitWidth,
-                          );
-                        return Container();
-                      },
-                    )),
+                future: getThumbData(File(asset.path)),
+                builder: (BuildContext context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done)
+                    return Image.memory(
+                      snapshot.data,
+                      fit: BoxFit.fitWidth,
+                    );
+                  return Container();
+                },
+              )),
           // Display a Play icon if the asset is a video
           if (asset.mediaType == MediaTypeVideo)
             Center(
@@ -229,36 +248,36 @@ class _VideoScreenState extends State<VideoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: initialized
-          // If the video is initialized, display it
+      // If the video is initialized, display it
           ? Scaffold(
-              body: Center(
-                child: AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  // Use the VideoPlayer widget to display the video.
-                  child: VideoPlayer(_controller),
-                ),
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  // Wrap the play or pause in a call to `setState`. This ensures the
-                  // correct icon is shown.
-                  setState(() {
-                    // If the video is playing, pause it.
-                    if (_controller.value.isPlaying) {
-                      _controller.pause();
-                    } else {
-                      // If the video is paused, play it.
-                      _controller.play();
-                    }
-                  });
-                },
-                // Display the correct icon depending on the state of the player.
-                child: Icon(
-                  _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                ),
-              ),
-            )
-          // If the video is not yet initialized, display a spinner
+        body: Center(
+          child: AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            // Use the VideoPlayer widget to display the video.
+            child: VideoPlayer(_controller),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Wrap the play or pause in a call to `setState`. This ensures the
+            // correct icon is shown.
+            setState(() {
+              // If the video is playing, pause it.
+              if (_controller.value.isPlaying) {
+                _controller.pause();
+              } else {
+                // If the video is paused, play it.
+                _controller.play();
+              }
+            });
+          },
+          // Display the correct icon depending on the state of the player.
+          child: Icon(
+            _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+          ),
+        ),
+      )
+      // If the video is not yet initialized, display a spinner
           : Center(child: CircularProgressIndicator()),
     );
   }

@@ -47,7 +47,15 @@ class SharedPreferenceHelper {
   }
 
   static Future<UserType> getUserType() async {
+
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getString(USER_ROLE) as UserType;
+    String userType = preferences.getString(USER_ROLE);
+    print(userType);
+    if (userType == "UserType.ADMIN") {
+      return UserType.ADMIN;
+    } else if (userType == "UserType.CUSTOMER") {
+      return UserType.CUSTOMER;
+    }
+    return UserType.NORMAL_USER;
   }
 }

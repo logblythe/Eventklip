@@ -10,9 +10,15 @@ class CaptureScreen extends StatefulWidget {
   final cameraEnabled;
 
   final videoEnabled;
+  final Function(XFile) onImageCaptured;
+  final Function(XFile) onVideoCaptured;
 
   const CaptureScreen(
-      {Key key, this.cameraEnabled = true, this.videoEnabled = true})
+      {Key key,
+      this.cameraEnabled = true,
+      this.videoEnabled = true,
+      this.onImageCaptured,
+      this.onVideoCaptured})
       : super(key: key);
 
   @override
@@ -634,15 +640,8 @@ class _CaptureScreenState extends State<CaptureScreen>
           videoController?.dispose();
           videoController = null;
         });
-        final media = await Media(
-                mediaType: MediaTypeAudio,
-                filename: file.name,
-                createdAt: DateTime.now().toUtc(),
-                isDeleted: false,
-                isUploaded: false,
-                path: file.path)
-            .save();
-        if (file != null) showInSnackBar('Picture saved to ${file.path}');
+
+        widget.onImageCaptured(file);
       }
     });
   }
@@ -725,18 +724,11 @@ class _CaptureScreenState extends State<CaptureScreen>
   }
 
   void onStopButtonPressed() {
-    stopVideoRecording().then((file) async {
+    stopVideoRecording().then((XFile file) async {
       if (mounted) setState(() {});
       if (file != null) {
-        final media = await Media(
-                mediaType: MediaTypeVideo,
-                filename: file.name,
-                createdAt: DateTime.now().toUtc(),
-                isDeleted: false,
-                isUploaded: false,
-                path: file.path)
-            .save();
-        showInSnackBar('Video recorded to ${file.path}');
+        widget.onVideoCaptured(file);
+
         videoFile = file;
         _startVideoPlayer();
       }
