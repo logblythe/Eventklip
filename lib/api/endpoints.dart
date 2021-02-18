@@ -29,6 +29,7 @@ class ApiEndPoints {
   ///folder apis
   static const GET_FOLDERS = "${BASE_URL}Clients/GetFolders";
   static const CREATE_FOLDER = "${BASE_URL}Clients/CreateFolder";
+  static const CREATE_QR = "${BASE_URL}Clients/CreateQR";
 
 
 }
