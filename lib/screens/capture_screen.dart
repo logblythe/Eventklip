@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
-import 'package:eventklip/models/model.dart';
+import 'package:eventklip/main.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-import '../main.dart';
 
 class CaptureScreen extends StatefulWidget {
   final cameraEnabled;
@@ -131,48 +130,51 @@ class _CaptureScreenState extends State<CaptureScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      body: Column(
+      body: Stack(
         children: <Widget>[
-          Expanded(
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Center(
-                      child: _cameraPreviewWidget(),
-                    ),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    border: Border.all(
-                      color: controller != null &&
-                              controller.value.isRecordingVideo
-                          ? Colors.redAccent
-                          : Colors.grey,
-                      width: 3.0,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 40.0),
-                  child: _captureControlRowWidget(),
-                ),
-              ],
+          Positioned(
+            child: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+              color: Colors.white,
             ),
+            top: 20,
+            left: 20,
           ),
-          _modeControlRowWidget(),
-          // Padding(
-          //   padding: const EdgeInsets.all(5.0),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.start,
-          //     children: <Widget>[
-          //       _cameraTogglesRowWidget(),
-          //       _thumbnailWidget(),
-          //     ],
-          //   ),
-          // ),
+          Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Container(
+                      child: Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: Center(
+                          child: _cameraPreviewWidget(),
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        border: Border.all(
+                          color: controller != null &&
+                                  controller.value.isRecordingVideo
+                              ? Colors.redAccent
+                              : Colors.grey,
+                          width: 3.0,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 40.0),
+                      child: _captureControlRowWidget(),
+                    ),
+                  ],
+                ),
+              ),
+              _modeControlRowWidget(),
+            ],
+          )
         ],
       ),
     );
@@ -253,34 +255,32 @@ class _CaptureScreenState extends State<CaptureScreen>
 
   /// Display the thumbnail of the captured image or video.
   Widget _thumbnailWidget() {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            videoController == null && imageFile == null
-                ? Container()
-                : SizedBox(
-                    child: (videoController == null)
-                        ? Image.file(File(imageFile.path))
-                        : Container(
-                            child: Center(
-                              child: AspectRatio(
-                                  aspectRatio:
-                                      videoController.value.size != null
-                                          ? videoController.value.aspectRatio
-                                          : 1.0,
-                                  child: VideoPlayer(videoController)),
-                            ),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.pink)),
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          videoController == null && imageFile == null
+              ? Container()
+              : SizedBox(
+                  child: (videoController == null)
+                      ? Image.file(File(imageFile.path))
+                      : Container(
+                          child: Center(
+                            child: AspectRatio(
+                                aspectRatio:
+                                    videoController.value.size != null
+                                        ? videoController.value.aspectRatio
+                                        : 1.0,
+                                child: VideoPlayer(videoController)),
                           ),
-                    width: 64.0,
-                    height: 64.0,
-                  ),
-          ],
-        ),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.pink)),
+                        ),
+                  width: 64.0,
+                  height: 64.0,
+                ),
+        ],
       ),
     );
   }
@@ -299,17 +299,15 @@ class _CaptureScreenState extends State<CaptureScreen>
               onPressed: controller != null ? onFlashModeButtonPressed : null,
             ),
             IconButton(
-              icon: Icon(Icons.exposure),
-              color: Colors.blue,
-              onPressed:
-                  controller != null ? onExposureModeButtonPressed : null,
-            ),
-            IconButton(
               icon: Icon(Icons.filter_center_focus),
               color: Colors.blue,
               onPressed: controller != null ? onFocusModeButtonPressed : null,
             ),
-            cameraFlipper()
+            cameraFlipper(),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: _thumbnailWidget(),
+            ),
           ],
         ),
         _flashModeControlRowWidget(),
@@ -636,9 +634,9 @@ class _CaptureScreenState extends State<CaptureScreen>
     takePicture().then((XFile file) async {
       if (mounted) {
         setState(() {
+          videoController = null;
           imageFile = file;
           videoController?.dispose();
-          videoController = null;
         });
 
         widget.onImageCaptured(file);

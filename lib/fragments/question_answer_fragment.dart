@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:eventklip/screens/capture_screen.dart';
 import 'package:eventklip/ui/parts/eventklip_video_player.dart';
 import 'package:eventklip/utils/app_widgets.dart';
@@ -84,7 +85,12 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
                       } else {
                         await Navigator.of(context)
                             .push(MaterialPageRoute(builder: (_) {
-                          return CaptureScreen(cameraEnabled: false,);
+                          return CaptureScreen(
+                            cameraEnabled: false,
+                            onVideoCaptured: (XFile file) {
+                              print(file);
+                            },
+                          );
                         }));
                       }
                     },
