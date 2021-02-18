@@ -183,7 +183,7 @@ Widget headingWidViewAll(BuildContext context, var titleText, callback,
   );
 }
 
-Widget appBarLayout(context, text, {darkBackground = true, actions}) {
+Widget appBarLayout(context, text, {darkBackground = true, leading, actions}) {
   return AppBar(
     elevation: 0,
     centerTitle: false,
@@ -192,6 +192,7 @@ Widget appBarLayout(context, text, {darkBackground = true, actions}) {
         ? Theme.of(context).scaffoldBackgroundColor
         : Colors.transparent,
     actions: actions,
+    leading: leading,
   );
 }
 
@@ -644,6 +645,8 @@ Widget formField(context, hint,
     controller,
     isPasswordVisible = false,
     isPassword = false,
+      readOnly = false,
+      showCursor=true,
     keyboardType = TextInputType.text,
     FormFieldValidator<String> validator,
     onSaved,
@@ -653,10 +656,14 @@ Widget formField(context, hint,
     IconData suffixIcon,
     String initialValue,
     maxLine = 1,
-    suffixIconSelector}) {
+    suffixIconSelector,
+    onTap}) {
   return TextFormField(
+    onTap: onTap,
     controller: controller,
     obscureText: isPassword && !isPasswordVisible,
+    readOnly: readOnly,
+    showCursor: showCursor,
     cursorColor: Theme.of(context).primaryColor,
     maxLines: maxLine,
     keyboardType: keyboardType,

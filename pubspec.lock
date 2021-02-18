@@ -358,6 +358,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.0"
+  flutter_cupertino_date_picker_fork:
+    dependency: "direct main"
+    description:
+      name: flutter_cupertino_date_picker_fork
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   flutter_html:
     dependency: "direct main"
     description:

@@ -10,6 +10,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.0
+  flutter_cupertino_date_picker_fork: ^1.0.1
   shared_preferences: 0.5.12+4
   provider:
   nb_utils: 3.2.11+4
