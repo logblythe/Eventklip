@@ -108,7 +108,7 @@ class _GalleryFragmentState extends State<GalleryFragment> {
   Future<void> saveFile(XFile file, int type) async {
     if (file != null) {
       final media = await Media(
-          mediaType: MediaTypeImage,
+          mediaType: type,
           filename: file.name,
           createdAt: DateTime.now().toUtc(),
           isDeleted: false,
@@ -152,8 +152,8 @@ class AssetThumbnail extends StatelessWidget {
           // Wrap the image in a Positioned.fill to fill the space
           Positioned.fill(
               child: asset.mediaType == MediaTypeImage
-                  ? Image.asset(
-                asset.path,
+                  ? Image.file(
+                File(asset.path),
                 fit: BoxFit.fitWidth,
               )
                   : FutureBuilder(
