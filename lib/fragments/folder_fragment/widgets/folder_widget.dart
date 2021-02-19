@@ -1,4 +1,5 @@
 import 'package:eventklip/models/folder_model.dart';
+import 'package:eventklip/ui/widgets/upload_indicator_widget.dart';
 import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/resources/size.dart';
 import 'package:eventklip/view_models/folder_state.dart';
@@ -20,9 +21,9 @@ class FolderWidget extends StatefulWidget {
   _FolderWidgetState createState() => _FolderWidgetState();
 }
 
-class _FolderWidgetState extends State<FolderWidget> {
-  int _count;
-  int _total;
+class _FolderWidgetState extends State<FolderWidget> with AutomaticKeepAliveClientMixin{
+  int _count=0;
+  int _total=0;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class _FolderWidgetState extends State<FolderWidget> {
       builder: (context, model, child) {
         return InkWell(
           onTap: () async {
-            /*  FilePickerResult result = await FilePicker.platform.pickFiles();
+              FilePickerResult result = await FilePicker.platform.pickFiles();
             if (result != null) {
               String filePath = result.files.single.path;
               model.uploadFile(filePath, (count, total) {
@@ -41,41 +42,44 @@ class _FolderWidgetState extends State<FolderWidget> {
               });
             } else {
               // todo User canceled the picker
-            }*/
-            model.selectFolder(widget.folderModel);
+            }
+            // model.selectFolder(widget.folderModel);
           },
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: RowOrColumn(
-                isRow: model.listView,
-                children: [
-                  Icon(
-                    Icons.folder_open_rounded,
-                    size: 48,
-                    color: colorPrimary,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: spacing_standard_new),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        text(context,
-                            widget.folderModel.name ?? 'Default folder name',
-                            fontSize: ts_extra_normal,
-                            fontFamily: font_bold,
-                            textColor: Colors.white),
-                        model.listView
-                            ? MoreLessText(widget.folderModel.description ??
-                                'This is a default folder description')
-                            : text(
-                                context, widget.folderModel.name ?? "Default")
-                      ],
+          child: UploadIndicatorWidget(
+            progress: _count/_total,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: RowOrColumn(
+                  isRow: model.listView,
+                  children: [
+                    Icon(
+                      Icons.folder_open_rounded,
+                      size: 48,
+                      color: colorPrimary,
                     ),
-                  )
-                ],
+                    Padding(
+                      padding: EdgeInsets.only(right: spacing_standard_new),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          text(context,
+                              widget.folderModel.name ?? 'Default folder name',
+                              fontSize: ts_extra_normal,
+                              fontFamily: font_bold,
+                              textColor: Colors.white),
+                          model.listView
+                              ? MoreLessText(widget.folderModel.description ??
+                                  'This is a default folder description')
+                              : text(
+                                  context, widget.folderModel.name ?? "Default")
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -83,6 +87,10 @@ class _FolderWidgetState extends State<FolderWidget> {
       },
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class RowOrColumn extends StatelessWidget {
