@@ -31,5 +31,11 @@ class ApiEndPoints {
   static const CREATE_FOLDER = "${BASE_URL}Clients/CreateFolder";
   static const CREATE_QR = "${BASE_URL}Clients/CreateQR";
 
+  //blob apis
+  static const POST_BLOB = "${BASE_URL}blob";
+
+  //client apis
+  static const CREATE_CLIENT_VIDEOS = "${BASE_URL}Clients/CreateClientVideos";
+
 
 }
