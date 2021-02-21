@@ -6,6 +6,7 @@ import 'package:eventklip/services/movie_service.dart';
 import 'package:eventklip/skeletons/movietile_skeleton.dart';
 import 'package:eventklip/ui/parts/eventklip_video_player.dart';
 import 'package:eventklip/ui/widgets/user_avatar_widget.dart';
+import 'package:eventklip/utils/constants.dart';
 import 'package:eventklip/utils/resources/colors.dart';
 import 'package:eventklip/utils/utility.dart';
 import 'package:eventklip/view_models/app_state.dart';
@@ -101,7 +102,7 @@ class EventklipVideoDetailScreenState extends State<EventklipVideoDetailScreen>
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-   /* var ratio;
+    /* var ratio;
     if (isFullScreen) {
       ratio = width / height;
     } else {
@@ -124,24 +125,34 @@ class EventklipVideoDetailScreenState extends State<EventklipVideoDetailScreen>
             }
           },
           child: SafeArea(
-             top: videoPlayer.currentState==null ? true : !videoPlayer.currentState.isFullScreen,
+            top: videoPlayer.currentState == null
+                ? true
+                : !videoPlayer.currentState.isFullScreen,
             child: Scaffold(
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    padding:
-                      EdgeInsets.only(top: MediaQuery.of(context).viewInsets.top),
-                    color: Colors.green,
-                    child: Container()
-                  ),
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).viewInsets.top),
+                      color: Colors.green,
+                      child: Container()),
                   Stack(
                     children: <Widget>[
                       Center(
                           child: EventklipVideoPlayer(
                         key: videoPlayer,
                         videoTitle: movie.title,
-                        videoUrl: movie.fileLocation,
+                        videoUrl: "$assetUrl${movie.fileLocation}",
+                        onCurrentPositionChanged: (position) {
+                          final provider = Provider.of<VideoDetailState>(
+                              context,
+                              listen: false);
+                          provider.setCurrentPosition(position);
+                        },
+                        onDurationChanged: (duration) {
+                          provider.setDuration(duration);
+                        },
                         onControllerChanged: (controller) {
                           this.videoController = controller;
                         },
@@ -168,8 +179,8 @@ class EventklipVideoDetailScreenState extends State<EventklipVideoDetailScreen>
   Widget _buildBottom(double modalHeight, BuildContext context) {
     return Stack(
       children: [
-    _buildMovieDetails(modalHeight, context),
-    _buildBottomSheet(modalHeight)
+        _buildMovieDetails(modalHeight, context),
+        _buildBottomSheet(modalHeight)
       ],
     );
   }
@@ -195,20 +206,21 @@ class EventklipVideoDetailScreenState extends State<EventklipVideoDetailScreen>
   Widget _buildMovieDetails(double modalHeight, BuildContext context) {
     var tags = movie.videoTags != null && movie.videoTags.isNotEmpty
         ? SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-          child: Row(
-              children: movie.videoTags
-                  .map(
-                    (e) => Chip(
-                      label: Text(
-                        e,
-                        style: TextStyle(color: textColorPrimary, fontSize: 12),
-                      ),
-                      backgroundColor: colorPrimary,
-                    ).paddingRight(spacing_standard),
-                  )
-                  .toList()),
-        )
+            scrollDirection: Axis.horizontal,
+            child: Row(
+                children: movie.videoTags
+                    .map(
+                      (e) => Chip(
+                        label: Text(
+                          e,
+                          style:
+                              TextStyle(color: textColorPrimary, fontSize: 12),
+                        ),
+                        backgroundColor: colorPrimary,
+                      ).paddingRight(spacing_standard),
+                    )
+                    .toList()),
+          )
         : Container();
     return Container(
         height: modalHeight,
@@ -236,46 +248,51 @@ class EventklipVideoDetailScreenState extends State<EventklipVideoDetailScreen>
               // Divider(
               //   color: Colors.grey,
               // ),
-              movie.canComment ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Consumer<VideoDetailState>(
-                    builder: (context, provider, child) {
-                      return headingText(context,
-                              "Comments  ${provider.comments?.length ?? ""}")
-                          .paddingOnly(
-                        left: spacing_standard_new,
-                        right: spacing_standard_new,
-                        bottom: spacing_control,
-                      );
-                    },
-                  ),
-                  Row(
-                    children: [
-                      UserAvatarWithInitials(
-                        Provider.of<EventklipAppState>(context, listen: false)
-                            .userProfile
-                            .fullname,
-                        size: 35,
-                      ).paddingOnly(right: 10),
-                      Expanded(
-                        child: RaisedButton(
-                          color: cardColor,
-                          splashColor: colorPrimary,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(ts_medium_small)),
-                          onPressed: () => _slideUpCommentSheet(context),
-                          child: Text(
-                            "Add a comment",
-                            style: TextStyle(color: textColorPrimary),
-                          ),
+              movie.canComment
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Consumer<VideoDetailState>(
+                          builder: (context, provider, child) {
+                            return headingText(context,
+                                    "Comments  ${provider.comments?.length ?? ""}")
+                                .paddingOnly(
+                              left: spacing_standard_new,
+                              right: spacing_standard_new,
+                              bottom: spacing_control,
+                            );
+                          },
                         ),
-                      ),
-                    ],
-                  ).paddingSymmetric(horizontal: spacing_standard_new)
-                ],
-              ).onTap(() => _slideUpCommentSheet(context)) : text(context, "Comments are turned off for this video",fontStyle: FontStyle.italic).paddingSymmetric(horizontal: spacing_standard_new),
+                        Row(
+                          children: [
+                            UserAvatarWithInitials(
+                              Provider.of<EventklipAppState>(context,
+                                      listen: false)
+                                  .userProfile
+                                  .fullname,
+                              size: 35,
+                            ).paddingOnly(right: 10),
+                            Expanded(
+                              child: RaisedButton(
+                                color: cardColor,
+                                splashColor: colorPrimary,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(ts_medium_small)),
+                                onPressed: () => _slideUpCommentSheet(context),
+                                child: Text(
+                                  "Add a comment",
+                                  style: TextStyle(color: textColorPrimary),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ).paddingSymmetric(horizontal: spacing_standard_new)
+                      ],
+                    ).onTap(() => _slideUpCommentSheet(context))
+                  : text(context, "Comments are turned off for this video",
+                          fontStyle: FontStyle.italic)
+                      .paddingSymmetric(horizontal: spacing_standard_new),
               Divider(
                 color: Colors.grey,
               ),
@@ -321,7 +338,6 @@ class EventklipVideoDetailScreenState extends State<EventklipVideoDetailScreen>
                         );
                 },
               ),
-
             ],
           ),
         ));

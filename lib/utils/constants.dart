@@ -1,5 +1,6 @@
 const mBaseUrl = 'https://iqonic.design/granth/api/';
 const assetUrl = 'https://boxklipfiles.blob.core.windows.net/';
+
 /// fonts
 const font_regular = 'Regular';
 const font_medium = 'Medium';
@@ -22,5 +23,6 @@ const AVATAR = 'AVATAR';
 const PASSWORD = 'PASSWORD';
 const IS_ONBOARDING_LAUNCHED = 'IS_ONBOARDING_LAUNCHED';
 
+const OVERLAY_TIMER_DURATION = 4;
 
-const OVERLAY_TIMER_DURATION=4;
+enum UserType { CUSTOMER, ADMIN, NORMAL_USER }

@@ -20,7 +20,8 @@ Widget text(context, var text,
     var fontFamily = font_regular,
     var isCentered = false,
     var maxLine = 1,
-      var fontStyle,
+    var fontStyle,
+    var height = 1.5,
     var latterSpacing = 0.1,
     var isLongText = false,
     var isJustify = false,
@@ -34,13 +35,12 @@ Widget text(context, var text,
             : TextAlign.start,
     maxLines: isLongText ? 99 : maxLine,
     overflow: TextOverflow.ellipsis,
-
     style: TextStyle(
         fontFamily: fontFamily,
         fontStyle: fontStyle,
         decoration: aDecoration != null ? aDecoration : null,
         fontSize: double.parse(fontSize.toString()).toDouble(),
-        height: 1.5,
+        height: height,
         color: textColor == colors.textColorSecondary
             ? Theme.of(context).textTheme.subtitle2.color
             : textColor.toString().isNotEmpty
@@ -75,7 +75,7 @@ Widget itemTitle(BuildContext context, var titleText,
 Widget itemSubTitle(BuildContext context, var titleText,
     {var fontFamily = font_regular,
     var fontsize = ts_normal,
-      var maxLines,
+    var maxLines,
     var colorThird = false,
     isLongText = true}) {
   return text(context, titleText,
@@ -183,13 +183,16 @@ Widget headingWidViewAll(BuildContext context, var titleText, callback,
   );
 }
 
-Widget appBarLayout(context, text, {darkBackground = true}) {
+Widget appBarLayout(context, text, {darkBackground = true, leading, actions}) {
   return AppBar(
     elevation: 0,
+    centerTitle: false,
     title: toolBarTitle(context, text),
     backgroundColor: darkBackground
         ? Theme.of(context).scaffoldBackgroundColor
         : Colors.transparent,
+    actions: actions,
+    leading: leading,
   );
 }
 
@@ -328,7 +331,7 @@ DotsDecorator dotsDecorator(context) {
 }
 
 Widget muviTitle(context) {
-  return Image.asset("assets/images/eventklipblue.png", height: 32);
+  return Image.asset("assets/images/eventklipround.png", height: 32);
 }
 
 Widget loadingWidgetMaker() {
@@ -642,6 +645,8 @@ Widget formField(context, hint,
     controller,
     isPasswordVisible = false,
     isPassword = false,
+      readOnly = false,
+      showCursor=true,
     keyboardType = TextInputType.text,
     FormFieldValidator<String> validator,
     onSaved,
@@ -651,10 +656,14 @@ Widget formField(context, hint,
     IconData suffixIcon,
     String initialValue,
     maxLine = 1,
-    suffixIconSelector}) {
+    suffixIconSelector,
+    onTap}) {
   return TextFormField(
+    onTap: onTap,
     controller: controller,
     obscureText: isPassword && !isPasswordVisible,
+    readOnly: readOnly,
+    showCursor: showCursor,
     cursorColor: Theme.of(context).primaryColor,
     maxLines: maxLine,
     keyboardType: keyboardType,

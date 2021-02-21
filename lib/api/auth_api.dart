@@ -5,6 +5,8 @@ import 'package:eventklip/di/injection.dart';
 import 'package:eventklip/interface/i_auth.dart';
 import 'package:eventklip/models/auth_token.dart';
 import 'package:eventklip/models/basic_server_response.dart';
+import 'package:eventklip/models/sign_up_payload.dart';
+import 'package:eventklip/models/sign_up_response.dart';
 import 'package:eventklip/models/user_profile.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -56,5 +58,20 @@ class AuthApi extends IAuth with ApiHelper {
         options: Options(headers: await getDefaultHeader(authenticate: true)));
     return returnResponse<BasicServerResponse>(response,
         modelCreator: (json) => BasicServerResponse.fromJson(json));
+  }
+
+  @override
+  Future<SignUpResponse> signUp(SignUpPayload payload) async {
+    final response =
+        await _dioClient.post(ApiEndPoints.SIGN_UP, data: payload.toJson());
+    return returnResponse<SignUpResponse>(response,
+        modelCreator: (json) => SignUpResponse.fromJson(json));
+  }
+
+  Future<BasicServerResponseWithObject> validateQr(String qrId) async {
+    final response = await _dioClient
+        .get(ApiEndPoints.VALIDATE_QR, queryParameters: {"Id": qrId});
+    return returnResponse<BasicServerResponseWithObject>(response,
+        modelCreator: (json) => BasicServerResponseWithObject.fromJson(json));
   }
 }

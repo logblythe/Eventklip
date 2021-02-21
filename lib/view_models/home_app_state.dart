@@ -56,6 +56,7 @@ class HomeAppState with ChangeNotifier {
         if (profile.isPasswordUpdated) {
           await SharedPreferenceHelper.setUserProfile(profile);
           await SharedPreferenceHelper.setIsLoggedIn();
+          await SharedPreferenceHelper.setUserType(UserType.ADMIN);
           final storage = FlutterSecureStorage();
           await storage.write(key: USER_EMAIL, value: email);
           await storage.write(key: PASSWORD, value: password);

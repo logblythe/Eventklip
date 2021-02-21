@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:eventklip/screens/home_screen.dart';
+import 'package:eventklip/screens/qr_users_home_screen.dart';
 import 'package:eventklip/screens/shared_preferences.dart';
+import 'package:eventklip/utils/constants.dart';
 import 'package:eventklip/view_models/app_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,14 +29,19 @@ class SplashScreenState extends State<SplashScreen>
     return Timer(_duration, navigationPage);
   }
 
-
   void navigationPage() async {
     final loggedIn = await SharedPreferenceHelper.getIsLoggedIn();
 
     if (loggedIn) {
       final user = await SharedPreferenceHelper.getUser();
-      Provider.of<EventklipAppState>(context, listen: false).setUserProfile(user);
-      launchScreenWithNewTask(context, HomeScreen.tag);
+      Provider.of<EventklipAppState>(context, listen: false)
+          .setUserProfile(user);
+      final userType = await SharedPreferenceHelper.getUserType();
+      if (userType == UserType.CUSTOMER) {
+        launchScreenWithNewTask(context, QrUsersHomeScreen.tag);
+      } else {
+        launchScreenWithNewTask(context, HomeScreen.tag);
+      }
     } else {
       launchScreenWithNewTask(context, OnBoardingScreen.tag);
     }
@@ -74,7 +81,7 @@ class SplashScreenState extends State<SplashScreen>
               FadeTransition(
                   opacity:
                       Tween(begin: 0.0, end: 1.0).animate(rotationController),
-                  child: Image.asset("assets/images/eventklipblue.png")),
+                  child: Image.asset("assets/images/eventklipround.png")),
               Loader()
             ],
           ),

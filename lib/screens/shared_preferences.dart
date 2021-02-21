@@ -40,4 +40,22 @@ class SharedPreferenceHelper {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.clear();
   }
+
+  static Future<void> setUserType(UserType userType) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setString(USER_ROLE, userType.toString());
+  }
+
+  static Future<UserType> getUserType() async {
+
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String userType = preferences.getString(USER_ROLE);
+    print(userType);
+    if (userType == "UserType.ADMIN") {
+      return UserType.ADMIN;
+    } else if (userType == "UserType.CUSTOMER") {
+      return UserType.CUSTOMER;
+    }
+    return UserType.NORMAL_USER;
+  }
 }

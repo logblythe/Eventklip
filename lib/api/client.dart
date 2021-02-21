@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:eventklip/api/endpoints.dart';
 import 'package:eventklip/models/failure.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:path/path.dart';
 
 @singleton
 class DioClient {
@@ -22,7 +25,6 @@ class DioClient {
           responseHeader: false,
           request: true,
           requestBody: true));
-
     }
   }
 
@@ -71,6 +73,45 @@ class DioClient {
       handleError(e);
     }
   }
+
+  Future<dynamic> postMultiPart(
+      String url, Map<String, dynamic> data, Map<String, File> files,
+      {ProgressCallback onSendProgress}) async {
+    try {
+      Map<String, MultipartFile> fileMap = {};
+      for (MapEntry fileEntry in files.entries) {
+        File file = fileEntry.value;
+        String fileName = basename(file.path);
+        fileMap[fileEntry.key] = MultipartFile(
+          file.openRead(),
+          await file.length(),
+          filename: fileName,
+        );
+      }
+      data.addAll(fileMap);
+      var formData = FormData.fromMap(data);
+      var response = await post(url,
+          data: formData,
+          options: Options(contentType: 'multipart/form-data'),
+          onSendProgress: onSendProgress);
+      return response;
+    } catch (e) {
+      handleError(e);
+    }
+  }
+
+  /* Future<Response> sendFile(String url, File file) async {
+    var len = await file.length();
+    var response = await post(
+      url,
+      data: file.openRead(),
+      options: Options(headers: {
+        Headers.contentLengthHeader: len,
+      } // set content-length
+          ),
+    );
+    return response;
+  }*/
 
   //handles Dio Error. that is not handled by the request and throws as Failure.
   Future handleError(e) {
