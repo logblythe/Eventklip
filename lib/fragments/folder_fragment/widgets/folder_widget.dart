@@ -1,9 +1,7 @@
 import 'package:eventklip/models/folder_model.dart';
-import 'package:eventklip/ui/widgets/upload_indicator_widget.dart';
 import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/resources/size.dart';
 import 'package:eventklip/view_models/folder_state.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,18 +10,10 @@ import '../../../utils/constants.dart';
 import '../../../utils/resources/colors.dart';
 import '../../../utils/resources/size.dart';
 
-class FolderWidget extends StatefulWidget {
+class FolderWidget extends StatelessWidget {
   final FolderModel folderModel;
 
   const FolderWidget({Key key, this.folderModel}) : super(key: key);
-
-  @override
-  _FolderWidgetState createState() => _FolderWidgetState();
-}
-
-class _FolderWidgetState extends State<FolderWidget> with AutomaticKeepAliveClientMixin{
-  int _count=0;
-  int _total=0;
 
   @override
   Widget build(BuildContext context) {
@@ -31,55 +21,38 @@ class _FolderWidgetState extends State<FolderWidget> with AutomaticKeepAliveClie
       builder: (context, model, child) {
         return InkWell(
           onTap: () async {
-              FilePickerResult result = await FilePicker.platform.pickFiles();
-            if (result != null) {
-              String filePath = result.files.single.path;
-              model.uploadFile(filePath, (count, total) {
-                setState(() {
-                  _count = count;
-                  _total = total;
-                });
-              });
-            } else {
-              // todo User canceled the picker
-            }
-            // model.selectFolder(widget.folderModel);
+            model.selectFolder(folderModel);
           },
-          child: UploadIndicatorWidget(
-            progress: _count/_total,
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RowOrColumn(
-                  isRow: model.listView,
-                  children: [
-                    Icon(
-                      Icons.folder_open_rounded,
-                      size: 48,
-                      color: colorPrimary,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: RowOrColumn(
+                isRow: model.listView,
+                children: [
+                  Icon(
+                    Icons.folder_open_rounded,
+                    size: 48,
+                    color: colorPrimary,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: spacing_standard_new),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        text(context, folderModel.name ?? 'Default folder name',
+                            fontSize: ts_extra_normal,
+                            fontFamily: font_bold,
+                            textColor: Colors.white),
+                        model.listView
+                            ? MoreLessText(folderModel.description ??
+                                'This is a default folder description')
+                            : text(context, folderModel.name ?? "Default")
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(right: spacing_standard_new),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          text(context,
-                              widget.folderModel.name ?? 'Default folder name',
-                              fontSize: ts_extra_normal,
-                              fontFamily: font_bold,
-                              textColor: Colors.white),
-                          model.listView
-                              ? MoreLessText(widget.folderModel.description ??
-                                  'This is a default folder description')
-                              : text(
-                                  context, widget.folderModel.name ?? "Default")
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
           ),
@@ -87,10 +60,6 @@ class _FolderWidgetState extends State<FolderWidget> with AutomaticKeepAliveClie
       },
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }
 
 class RowOrColumn extends StatelessWidget {

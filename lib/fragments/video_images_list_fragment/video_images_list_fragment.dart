@@ -5,8 +5,13 @@ import 'package:eventklip/fragments/video_images_list_fragment/components/contex
 import 'package:eventklip/models/model.dart';
 import 'package:eventklip/screens/capture_screen.dart';
 import 'package:eventklip/ui/widgets/context_menu.dart';
+import 'package:eventklip/ui/widgets/upload_indicator_widget.dart';
 import 'package:eventklip/utils/utility.dart';
+import 'package:eventklip/view_models/home_app_state.dart';
+import 'package:eventklip/view_models/qr_user_state.dart';
+import 'package:eventklip/view_models/qr_user_state.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class GalleryFragment extends StatefulWidget {
@@ -17,6 +22,8 @@ class GalleryFragment extends StatefulWidget {
 class _GalleryFragmentState extends State<GalleryFragment> {
   // This will hold all the assets we fetched
   List<Media> medias = [];
+  Map<int, double> _mediaProgress = {};
+  QrUserState _provider;
 
   @override
   void initState() {
@@ -38,83 +45,106 @@ class _GalleryFragmentState extends State<GalleryFragment> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        heroTag: "captureImageVideo",
-        onPressed: () async {
-          await Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-            return CaptureScreen(
-              onImageCaptured: (file) async {
-                saveFile(file, MediaTypeImage);
-              },
-              onVideoCaptured: (file) async {
-                saveFile(file, MediaTypeVideo);
-              },
-            );
-          }));
-          _fetchAssets();
-        },
-        child: Icon(Icons.camera),
-      ),
-      appBar: AppBar(
-        title: Text('Gallery'),
-        actions: [
-          ContextMenu<MenuItemAssetList>(
-              onSelected: (item) {
-                if (item == MenuItemAssetList.SortByDate) {
-                  setState(() {
-                    medias.sort((a, b) {
-                      return b.createdAt.millisecondsSinceEpoch -
-                          a.createdAt.millisecondsSinceEpoch;
+    return Consumer<QrUserState>(
+      builder: (context, model, child) {
+        _provider = model;
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            heroTag: "captureImageVideo",
+            onPressed: () async {
+              await Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                return CaptureScreen(
+                  onImageCaptured: (file) async {
+                    saveFile(file, MediaTypeImage);
+                  },
+                  onVideoCaptured: (file) async {
+                    saveFile(file, MediaTypeVideo);
+                  },
+                );
+              }));
+              _fetchAssets();
+            },
+            child: Icon(Icons.camera),
+          ),
+          appBar: AppBar(
+            title: Text('Gallery'),
+            actions: [
+              ContextMenu<MenuItemAssetList>(
+                  onSelected: (item) {
+                    if (item == MenuItemAssetList.SortByDate) {
+                      setState(() {
+                        medias.sort((a, b) {
+                          return b.createdAt.millisecondsSinceEpoch -
+                              a.createdAt.millisecondsSinceEpoch;
+                        });
+                      });
+                    } else {
+                      setState(() {
+                        medias.sort((a, b) {
+                          return b.mediaType - a.mediaType;
+                        });
+                      });
+                    }
+                  },
+                  onCanceled: () {},
+                  itemBuilder: (BuildContext context) {
+                    return List<PopupMenuEntry<MenuItemAssetList>>.generate(
+                        MenuItemAssetList.values.length * 2 - 1, (int index) {
+                      if (index.isEven) {
+                        final item = MenuItemAssetList.values[index ~/ 2];
+                        return ContextMenuItem<MenuItemAssetList>(
+                            value: item, text: item.text);
+                      } else {
+                        return ContextDivider();
+                      }
                     });
-                  });
-                } else {
-                  setState(() {
-                    medias.sort((a, b) {
-                      return b.mediaType - a.mediaType;
-                    });
-                  });
-                }
-              },
-              onCanceled: () {},
-              itemBuilder: (BuildContext context) {
-                return List<PopupMenuEntry<MenuItemAssetList>>.generate(
-                    MenuItemAssetList.values.length * 2 - 1, (int index) {
-                  if (index.isEven) {
-                    final item = MenuItemAssetList.values[index ~/ 2];
-                    return ContextMenuItem<MenuItemAssetList>(
-                        value: item, text: item.text);
-                  } else {
-                    return ContextDivider();
-                  }
-                });
-              },
-              child: Container())
-        ],
-      ),
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          // A grid view with 3 items per row
-          crossAxisCount: 3,
-        ),
-        itemCount: medias.length,
-        itemBuilder: (_, index) {
-          return AssetThumbnail(asset: medias[index]);
-        },
-      ),
+                  },
+                  child: Container())
+            ],
+          ),
+          body: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              // A grid view with 3 items per row
+              crossAxisCount: 3,
+            ),
+            itemCount: medias.length,
+            itemBuilder: (_, index) {
+              return UploadIndicatorWidget(
+                  progress: _mediaProgress[medias[index].id]??0,
+                  uploaded: medias[index].isUploaded,
+                  child: AssetThumbnail(asset: medias[index]));
+            },
+          ),
+        );
+      },
     );
   }
 
   Future<void> saveFile(XFile file, int type) async {
     if (file != null) {
-      final media = await Media(
+      Media _media = Media(
           mediaType: type,
           filename: file.name,
           createdAt: DateTime.now().toUtc(),
           isDeleted: false,
           isUploaded: false,
-          path: file.path)
-          .save();
+          path: file.path);
+      int mediaId = await _media.save();
+      final res = await _provider.uploadFile(file.path, (count, total) {
+        setState((){
+          double progress = count / total;
+          if (_mediaProgress.containsKey(mediaId)) {
+            _mediaProgress[mediaId] = progress;
+          } else {
+            _mediaProgress.addAll({mediaId: progress});
+          }
+        });
+      });
+      if (res.success) {
+        _media.id = mediaId;
+        _media.isUploaded = true;
+        _media.save();
+      }
     }
   }
 }

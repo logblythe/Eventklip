@@ -32,8 +32,8 @@ class ApiEndPoints {
   static const CREATE_QR = "${BASE_URL}Clients/CreateQR";
 
   //blob apis
-  static const POST_BLOB = "${BASE_URL}blob";
-
+  static const POST_VIDEO = "${BASE_URL}Blob/PostVideo";
+  static const POST_IMAGES = "${BASE_URL}Blob/PostImages";
   //client apis
   static const CREATE_CLIENT_VIDEOS = "${BASE_URL}Clients/CreateClientVideos";
 

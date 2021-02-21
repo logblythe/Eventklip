@@ -34,17 +34,15 @@ class SignInScreenState extends State<SignInScreen> {
   FocusNode passFocus = FocusNode();
   FocusNode emailFocus = FocusNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String email;
-  String password;
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   bool passwordVisible = false;
   bool isLoading = false;
 
+  String email;
+  String password;
   String errorMessage;
-
   String _redirectedToUrl;
-
   bool _isWebViewLoading = false;
 
   showLoading(bool show) {

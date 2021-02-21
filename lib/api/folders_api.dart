@@ -11,6 +11,7 @@ import 'package:eventklip/models/file_upload_model.dart';
 import 'package:eventklip/models/folder_model.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:mime/mime.dart';
 
 abstract class IFolders {
   Future getFolders();
@@ -56,10 +57,10 @@ class FoldersApi extends IFolders with ApiHelper {
         modelCreator: (json) => CreateQrModel.fromJson(json));
   }
 
-  Future<FileUploadModel> uploadFile(File file,
+  Future<FileUploadModel> uploadFile(File file, String fileType,
       {ProgressCallback onSendProgress}) async {
     final response = await _dioClient.postMultiPart(
-      ApiEndPoints.POST_BLOB,
+      fileType == "video" ? ApiEndPoints.POST_VIDEO : ApiEndPoints.POST_IMAGES,
       {},
       {"files": file},
       onSendProgress: onSendProgress,
