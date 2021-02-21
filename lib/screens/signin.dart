@@ -140,7 +140,7 @@ class SignInScreenState extends State<SignInScreen> {
               color: colorPrimary.withOpacity(0.3),
               borderRadius: BorderRadius.circular(16),
             ),
-          ).paddingSymmetric(horizontal: spacing_standard_new)
+          ).paddingSymmetric(horizontal: spacing_standard_new).paddingBottom(spacing_standard_new)
         : Container();
 
     return Scaffold(
@@ -252,8 +252,8 @@ class SignInScreenState extends State<SignInScreen> {
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (_) {
                               return QRScanner();
                             }));
                           })
@@ -337,9 +337,9 @@ class _WebViewEventClipState extends State<WebViewEventClip> {
   void initState() {
     flutterWebViewPlugin.onUrlChanged.listen((String url) {
       if (mounted) {
-        if(url.contains("https://www.boxklip.com/Home/Dashboard")){
+        if (url.contains("https://www.boxklip.com/Home/Dashboard")) {
           Navigator.of(context).pop();
-          print("Paid!!");
+          toast("Thank you for signing up with us. Please login.");
         }
       }
     });

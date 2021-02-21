@@ -19,37 +19,40 @@ class UserProfile {
   bool phoneNumberConfirmed;
   bool twoFactorEnabled;
   String lockoutEnd;
+  String eventId;
   bool lockoutEnabled;
   int accessFailedCount;
 
   UserProfile(
       {this.fullname,
-        this.contact,
-        this.country,
-        this.organization,
-        this.workTitle,
-        this.adminId,
-        this.isPasswordUpdated,
-        this.id,
-        this.userName,
-        this.normalizedUserName,
-        this.email,
-        this.normalizedEmail,
-        this.emailConfirmed,
-        this.passwordHash,
-        this.securityStamp,
-        this.concurrencyStamp,
-        this.phoneNumber,
-        this.phoneNumberConfirmed,
-        this.twoFactorEnabled,
-        this.lockoutEnd,
-        this.lockoutEnabled,
-        this.accessFailedCount});
+      this.contact,
+      this.country,
+      this.organization,
+      this.workTitle,
+      this.adminId,
+      this.isPasswordUpdated,
+      this.id,
+      this.userName,
+      this.normalizedUserName,
+      this.email,
+      this.eventId,
+      this.normalizedEmail,
+      this.emailConfirmed,
+      this.passwordHash,
+      this.securityStamp,
+      this.concurrencyStamp,
+      this.phoneNumber,
+      this.phoneNumberConfirmed,
+      this.twoFactorEnabled,
+      this.lockoutEnd,
+      this.lockoutEnabled,
+      this.accessFailedCount});
 
   UserProfile.fromJson(Map<String, dynamic> json) {
     fullname = json['fullname'];
     contact = json['contact'];
     country = json['country'];
+    eventId = json['eventId'];
     organization = json['organization'];
     workTitle = json['workTitle'];
     adminId = json['adminId'];
@@ -78,6 +81,7 @@ class UserProfile {
     data['country'] = this.country;
     data['organization'] = this.organization;
     data['workTitle'] = this.workTitle;
+    data['eventId'] = this.eventId;
     data['adminId'] = this.adminId;
     data['isPasswordUpdated'] = this.isPasswordUpdated;
     data['id'] = this.id;

@@ -81,7 +81,7 @@ class SplashScreenState extends State<SplashScreen>
               FadeTransition(
                   opacity:
                       Tween(begin: 0.0, end: 1.0).animate(rotationController),
-                  child: Image.asset("assets/images/eventklipblue.png")),
+                  child: Image.asset("assets/images/eventklipround.png")),
               Loader()
             ],
           ),

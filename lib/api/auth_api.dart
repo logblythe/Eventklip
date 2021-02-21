@@ -67,4 +67,11 @@ class AuthApi extends IAuth with ApiHelper {
     return returnResponse<SignUpResponse>(response,
         modelCreator: (json) => SignUpResponse.fromJson(json));
   }
+
+  Future<BasicServerResponseWithObject> validateQr(String qrId) async {
+    final response = await _dioClient
+        .get(ApiEndPoints.VALIDATE_QR, queryParameters: {"Id": qrId});
+    return returnResponse<BasicServerResponseWithObject>(response,
+        modelCreator: (json) => BasicServerResponseWithObject.fromJson(json));
+  }
 }

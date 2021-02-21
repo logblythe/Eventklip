@@ -1,4 +1,5 @@
 import 'package:eventklip/di/injection.dart';
+import 'package:eventklip/models/basic_server_response.dart';
 import 'package:eventklip/models/sign_up_payload.dart';
 import 'package:eventklip/models/user_profile.dart';
 import 'package:eventklip/screens/qr_users_home_screen.dart';
@@ -17,9 +18,9 @@ import 'package:eventklip/utils/widget_extensions.dart';
 class SignUpScreen extends StatefulWidget {
   static String tag = '/SignUpScreen';
 
-  final adminId;
+  final ReturnObject authDetails;
 
-  const SignUpScreen({Key key, this.adminId}) : super(key: key);
+  const SignUpScreen({Key key, this.authDetails}) : super(key: key);
 
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
@@ -76,7 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           final response = await _authService.signUp(
                               SignUpPayload(
                                   email: userEmail,
-                                  adminId: widget.adminId,
+                                  adminId: widget.authDetails.adminId,
                                   contact: contact,
                                   confirmPassword: password,
                                   password: password,
@@ -85,7 +86,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             await SharedPreferenceHelper.setUserProfile(
                                 UserProfile(
                                     userName:
-                                        response.returnJSONObj.value.userName));
+                                        response.returnJSONObj.value.userName,
+                                    eventId: widget.authDetails.eventId,
+                                    adminId: widget.authDetails.adminId));
                             await SharedPreferenceHelper.saveToken(
                                 response.returnJSONObj.value.accessToken);
                             await SharedPreferenceHelper.setIsLoggedIn();

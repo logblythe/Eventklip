@@ -1,9 +1,14 @@
 import 'dart:ui';
+import 'package:eventklip/di/injection.dart';
+import 'package:eventklip/models/basic_server_response.dart';
 import 'package:eventklip/screens/sign_up_screen.dart';
+import 'package:eventklip/services/authentication_service.dart';
 import 'package:eventklip/ui/widgets/animated_scanner.dart';
+import 'package:eventklip/view_models/app_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRScanner extends StatefulWidget {
@@ -25,6 +30,7 @@ class _QRScannerState extends State<QRScanner>
   bool completed = false;
 
   bool isScanned = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,16 +40,32 @@ class _QRScannerState extends State<QRScanner>
     );
   }
 
+  void setLoading(bool isLoading) {
+    setState(() {
+      isLoading = isLoading;
+    });
+  }
+
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
+    controller.scannedDataStream.listen((scanData) async {
       if (!isScanned) {
         isScanned = true;
         try {
           var uri = Uri.parse(scanData.code);
-          final adminId = uri.queryParameters["Id"];
-          if (adminId != "" || adminId != null) {
-            _sendToSignUpScreen(adminId);
+          final qrCodeId = uri.queryParameters["Id"];
+          if (qrCodeId != "" || qrCodeId != null) {
+            AuthenticationService _authService =
+                getIt.get<AuthenticationService>();
+            setLoading(true);
+
+            final authDetails = await _authService.validateQr(qrCodeId);
+            if (authDetails.success) {
+              _sendToSignUpScreen(authDetails);
+            } else {
+              toast("Something went wrong");
+            }
+            setLoading(false);
           }
         } catch (e) {
           toast("Invalid QR Code");
@@ -52,6 +74,7 @@ class _QRScannerState extends State<QRScanner>
       }
     });
   }
+
   //sign up
   //get token back
   //save token,save user type and user,setis logged in
@@ -59,9 +82,9 @@ class _QRScannerState extends State<QRScanner>
   //fetch videos and images of user+eventId
   //fetch q& a
 
-  _sendToSignUpScreen(String adminId) async {
+  _sendToSignUpScreen(BasicServerResponseWithObject authDetails) async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-      return SignUpScreen(adminId: adminId);
+      return SignUpScreen(authDetails: authDetails.returnObject);
     }));
     isScanned = false;
   }
@@ -142,6 +165,7 @@ class _QRScannerState extends State<QRScanner>
             )),
           ],
         ),
+        isLoading ? Loader() : Container(),
         Positioned(
           top: 40,
           left: 10,

@@ -32,4 +32,8 @@ class AuthenticationService {
   Future<SignUpResponse> signUp(SignUpPayload payload) {
     return _authApi.signUp(payload);
   }
+
+  Future<BasicServerResponseWithObject> validateQr(String qrId) {
+    return _authApi.validateQr(qrId);
+  }
 }

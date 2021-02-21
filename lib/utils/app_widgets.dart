@@ -330,7 +330,7 @@ DotsDecorator dotsDecorator(context) {
 }
 
 Widget muviTitle(context) {
-  return Image.asset("assets/images/eventklipblue.png", height: 32);
+  return Image.asset("assets/images/eventklipround.png", height: 32);
 }
 
 Widget loadingWidgetMaker() {
