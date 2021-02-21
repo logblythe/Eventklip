@@ -1,3 +1,4 @@
+import 'package:eventklip/fragments/more_fragment_qr_users.dart';
 import 'package:eventklip/fragments/question_answer_fragment.dart';
 import 'package:eventklip/fragments/video_images_list_fragment/video_images_list_fragment.dart';
 import 'package:eventklip/view_models/home_app_state.dart';
@@ -20,7 +21,6 @@ class QrUsersHomeScreen extends StatefulWidget {
 class QrUsersHomeScreenState extends State<QrUsersHomeScreen> {
   var _selectedIndex = 0;
   var myFilesFragment = MyFilesFragment();
-  var moreFragment = MoreFragment();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,9 @@ class QrUsersHomeScreenState extends State<QrUsersHomeScreen> {
               body: Center(
                 child: _selectedIndex == 0
                     ? GalleryFragment()
-                    : QuestionAnswerFragment(),
+                    : _selectedIndex == 1
+                        ? QuestionAnswerFragment()
+                        : MoreFragmentQrUsers(),
               ),
               bottomNavigationBar: Container(
                 decoration: BoxDecoration(
@@ -56,6 +58,7 @@ class QrUsersHomeScreenState extends State<QrUsersHomeScreen> {
                     AppBottomNavigationBarItem(
                       icon: ic_video,
                     ),
+                    AppBottomNavigationBarItem(icon: ic_faq),
                     AppBottomNavigationBarItem(icon: ic_user),
                   ],
                   currentIndex: _selectedIndex,

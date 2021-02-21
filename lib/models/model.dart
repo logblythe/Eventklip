@@ -22,6 +22,7 @@ const mediaTable = SqfEntityTable(
       SqfEntityField('userEmail', DbType.text),
       SqfEntityField('userPhone', DbType.text),
       SqfEntityField('adminId', DbType.text),
+      SqfEntityField('eventId', DbType.text),
       SqfEntityField('filename', DbType.text),
       SqfEntityField('createdAt', DbType.datetimeUtc),
       SqfEntityField('mediaType', DbType.integer, defaultValue: 0),

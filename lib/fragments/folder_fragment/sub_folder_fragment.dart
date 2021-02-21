@@ -20,7 +20,7 @@ class SubFoldersFragment extends StatelessWidget {
         return Scaffold(
           appBar: appBarLayout(
             context,
-            model.selectedFolder.name,
+            model.selectedFolder.name ?? "-",
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: colors.white),
               onPressed: onBack,

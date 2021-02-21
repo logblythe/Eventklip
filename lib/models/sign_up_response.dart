@@ -47,11 +47,13 @@ class ReturnJSONObj {
 class Value {
   String accessToken;
   String userName;
+  String fullName;
 
-  Value({this.accessToken, this.userName});
+  Value({this.accessToken, this.userName,this.fullName});
 
   Value.fromJson(Map<String, dynamic> json) {
     accessToken = json['access_Token'];
+    fullName = json['fullName'];
     userName = json['userName'];
   }
 
@@ -59,6 +61,7 @@ class Value {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['access_Token'] = this.accessToken;
     data['userName'] = this.userName;
+    data['fullName'] = this.fullName;
     return data;
   }
 }

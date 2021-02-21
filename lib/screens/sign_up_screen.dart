@@ -87,6 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 UserProfile(
                                     userName:
                                         response.returnJSONObj.value.userName,
+                                    fullname: response.returnJSONObj.value.fullName,
                                     eventId: widget.authDetails.eventId,
                                     adminId: widget.authDetails.adminId));
                             await SharedPreferenceHelper.saveToken(

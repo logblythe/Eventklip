@@ -36,6 +36,7 @@ class TableMedia extends SqfEntityTableBase {
       SqfEntityFieldBase('userEmail', DbType.text, isNotNull: false),
       SqfEntityFieldBase('userPhone', DbType.text, isNotNull: false),
       SqfEntityFieldBase('adminId', DbType.text, isNotNull: false),
+      SqfEntityFieldBase('eventId', DbType.text, isNotNull: false),
       SqfEntityFieldBase('filename', DbType.text, isNotNull: false),
       SqfEntityFieldBase('createdAt', DbType.datetimeUtc,
           isNotNull: false, minValue: DateTime.parse('1900-01-01')),
@@ -83,6 +84,7 @@ class Media {
       this.userEmail,
       this.userPhone,
       this.adminId,
+      this.eventId,
       this.filename,
       this.createdAt,
       this.mediaType,
@@ -95,6 +97,7 @@ class Media {
       this.userEmail,
       this.userPhone,
       this.adminId,
+      this.eventId,
       this.filename,
       this.createdAt,
       this.mediaType,
@@ -108,6 +111,7 @@ class Media {
       this.userEmail,
       this.userPhone,
       this.adminId,
+      this.eventId,
       this.filename,
       this.createdAt,
       this.mediaType,
@@ -131,6 +135,9 @@ class Media {
     }
     if (o['adminId'] != null) {
       adminId = o['adminId'] as String;
+    }
+    if (o['eventId'] != null) {
+      eventId = o['eventId'] as String;
     }
     if (o['filename'] != null) {
       filename = o['filename'] as String;
@@ -158,6 +165,7 @@ class Media {
   String userEmail;
   String userPhone;
   String adminId;
+  String eventId;
   String filename;
   DateTime createdAt;
   int mediaType;
@@ -195,6 +203,10 @@ class Media {
 
     if (adminId != null) {
       map['adminId'] = adminId;
+    }
+
+    if (eventId != null) {
+      map['eventId'] = eventId;
     }
 
     if (filename != null) {
@@ -246,6 +258,10 @@ class Media {
       map['adminId'] = adminId;
     }
 
+    if (eventId != null) {
+      map['eventId'] = eventId;
+    }
+
     if (filename != null) {
       map['filename'] = filename;
     }
@@ -287,6 +303,7 @@ class Media {
       userEmail,
       userPhone,
       adminId,
+      eventId,
       filename,
       createdAt != null ? createdAt.millisecondsSinceEpoch : null,
       mediaType,
@@ -302,6 +319,7 @@ class Media {
       userEmail,
       userPhone,
       adminId,
+      eventId,
       filename,
       createdAt != null ? createdAt.millisecondsSinceEpoch : null,
       mediaType,
@@ -416,7 +434,7 @@ class Media {
   ///
   /// Returns a <List<BoolResult>>
   static Future<List<dynamic>> saveAll(List<Media> medias) async {
-    // final results = _mnMedia.saveAll('INSERT OR REPLACE INTO media (id,path, userEmail, userPhone, adminId, filename, createdAt, mediaType, isUploaded,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?)',medias);
+    // final results = _mnMedia.saveAll('INSERT OR REPLACE INTO media (id,path, userEmail, userPhone, adminId, eventId, filename, createdAt, mediaType, isUploaded,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?,?)',medias);
     // return results; removed in sqfentity_gen 1.3.0+6
     await Eventklip().batchStart();
     for (final obj in medias) {
@@ -439,13 +457,14 @@ class Media {
   Future<int> upsert() async {
     try {
       if (await _mnMedia.rawInsert(
-              'INSERT OR REPLACE INTO media (id,path, userEmail, userPhone, adminId, filename, createdAt, mediaType, isUploaded,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?)',
+              'INSERT OR REPLACE INTO media (id,path, userEmail, userPhone, adminId, eventId, filename, createdAt, mediaType, isUploaded,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?,?)',
               [
                 id,
                 path,
                 userEmail,
                 userPhone,
                 adminId,
+                eventId,
                 filename,
                 createdAt != null ? createdAt.millisecondsSinceEpoch : null,
                 mediaType,
@@ -475,7 +494,7 @@ class Media {
   /// Returns a BoolCommitResult
   Future<BoolCommitResult> upsertAll(List<Media> medias) async {
     final results = await _mnMedia.rawInsertAll(
-        'INSERT OR REPLACE INTO media (id,path, userEmail, userPhone, adminId, filename, createdAt, mediaType, isUploaded,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?)',
+        'INSERT OR REPLACE INTO media (id,path, userEmail, userPhone, adminId, eventId, filename, createdAt, mediaType, isUploaded,isDeleted)  VALUES (?,?,?,?,?,?,?,?,?,?,?)',
         medias);
     return results;
   }
@@ -957,6 +976,11 @@ class MediaFilterBuilder extends SearchCriteria {
     return _adminId = setField(_adminId, 'adminId', DbType.text);
   }
 
+  MediaField _eventId;
+  MediaField get eventId {
+    return _eventId = setField(_eventId, 'eventId', DbType.text);
+  }
+
   MediaField _filename;
   MediaField get filename {
     return _filename = setField(_filename, 'filename', DbType.text);
@@ -1313,6 +1337,12 @@ class MediaFields {
   static TableField get adminId {
     return _fAdminId =
         _fAdminId ?? SqlSyntax.setField(_fAdminId, 'adminId', DbType.text);
+  }
+
+  static TableField _fEventId;
+  static TableField get eventId {
+    return _fEventId =
+        _fEventId ?? SqlSyntax.setField(_fEventId, 'eventId', DbType.text);
   }
 
   static TableField _fFilename;

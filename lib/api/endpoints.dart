@@ -10,9 +10,9 @@ class ApiEndPoints {
   static const CHANGE_PASSWORD = "${BASE_URL}UserControl/ChangePassword";
   static const CHANGE_PASSWORD_FIRST_TIME =
       "${BASE_URL}UserControl/ChangePassword";
-  static const VALIDATE_QR = "${BASE_URL}UserControl/QRValidate";
 
   ///movie apis
+  static const VALIDATE_QR = "${BASE_URL}Clients/QRValidate";
   static const GET_MOVIES = "${BASE_URL}Clients/GetVideoList";
   static const GET_RELATED_MOVIES = "${BASE_URL}Clients/GetRelatedVideos";
   static const CREATE_VIEW = "${BASE_URL}Clients/CreateView";

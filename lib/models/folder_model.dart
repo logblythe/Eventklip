@@ -3,8 +3,8 @@ class FolderModel {
   String name;
   String description;
   bool isActive;
-  Null parentFolder;
-  Null createdById;
+  String parentFolder;
+  String createdById;
   String createdDate;
   Null applicationUser;
 

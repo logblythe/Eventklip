@@ -4,6 +4,7 @@ import 'package:eventklip/fragments/comment_fragment.dart';
 import 'package:eventklip/fragments/video_images_list_fragment/components/context_menu.dart';
 import 'package:eventklip/models/model.dart';
 import 'package:eventklip/screens/capture_screen.dart';
+import 'package:eventklip/screens/shared_preferences.dart';
 import 'package:eventklip/ui/widgets/context_menu.dart';
 import 'package:eventklip/ui/widgets/upload_indicator_widget.dart';
 import 'package:eventklip/utils/utility.dart';
@@ -33,7 +34,8 @@ class _GalleryFragmentState extends State<GalleryFragment> {
   }
 
   _fetchAssets() async {
-    final medias = await Media().select().toList();
+    final user = await SharedPreferenceHelper.getUser();
+    final medias = await Media().select().eventId.equals(user.eventId).toList();
     medias.sort((a, b) {
       return b.createdAt.millisecondsSinceEpoch -
           a.createdAt.millisecondsSinceEpoch;
@@ -110,7 +112,7 @@ class _GalleryFragmentState extends State<GalleryFragment> {
             itemCount: medias.length,
             itemBuilder: (_, index) {
               return UploadIndicatorWidget(
-                  progress: _mediaProgress[medias[index].id]??0,
+                  progress: _mediaProgress[medias[index].id] ?? 0,
                   uploaded: medias[index].isUploaded,
                   child: AssetThumbnail(asset: medias[index]));
             },
@@ -121,17 +123,20 @@ class _GalleryFragmentState extends State<GalleryFragment> {
   }
 
   Future<void> saveFile(XFile file, int type) async {
+    final user = await SharedPreferenceHelper.getUser();
     if (file != null) {
       Media _media = Media(
           mediaType: type,
           filename: file.name,
           createdAt: DateTime.now().toUtc(),
           isDeleted: false,
+          adminId: user.adminId,
+          eventId: user.eventId,
           isUploaded: false,
           path: file.path);
       int mediaId = await _media.save();
       final res = await _provider.uploadFile(file.path, (count, total) {
-        setState((){
+        setState(() {
           double progress = count / total;
           if (_mediaProgress.containsKey(mediaId)) {
             _mediaProgress[mediaId] = progress;
@@ -183,20 +188,20 @@ class AssetThumbnail extends StatelessWidget {
           Positioned.fill(
               child: asset.mediaType == MediaTypeImage
                   ? Image.file(
-                File(asset.path),
-                fit: BoxFit.fitWidth,
-              )
-                  : FutureBuilder(
-                future: getThumbData(File(asset.path)),
-                builder: (BuildContext context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done)
-                    return Image.memory(
-                      snapshot.data,
+                      File(asset.path),
                       fit: BoxFit.fitWidth,
-                    );
-                  return Container();
-                },
-              )),
+                    )
+                  : FutureBuilder(
+                      future: getThumbData(File(asset.path)),
+                      builder: (BuildContext context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done)
+                          return Image.memory(
+                            snapshot.data,
+                            fit: BoxFit.fitWidth,
+                          );
+                        return Container();
+                      },
+                    )),
           // Display a Play icon if the asset is a video
           if (asset.mediaType == MediaTypeVideo)
             Center(
@@ -278,36 +283,36 @@ class _VideoScreenState extends State<VideoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: initialized
-      // If the video is initialized, display it
+          // If the video is initialized, display it
           ? Scaffold(
-        body: Center(
-          child: AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            // Use the VideoPlayer widget to display the video.
-            child: VideoPlayer(_controller),
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // Wrap the play or pause in a call to `setState`. This ensures the
-            // correct icon is shown.
-            setState(() {
-              // If the video is playing, pause it.
-              if (_controller.value.isPlaying) {
-                _controller.pause();
-              } else {
-                // If the video is paused, play it.
-                _controller.play();
-              }
-            });
-          },
-          // Display the correct icon depending on the state of the player.
-          child: Icon(
-            _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-          ),
-        ),
-      )
-      // If the video is not yet initialized, display a spinner
+              body: Center(
+                child: AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  // Use the VideoPlayer widget to display the video.
+                  child: VideoPlayer(_controller),
+                ),
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  // Wrap the play or pause in a call to `setState`. This ensures the
+                  // correct icon is shown.
+                  setState(() {
+                    // If the video is playing, pause it.
+                    if (_controller.value.isPlaying) {
+                      _controller.pause();
+                    } else {
+                      // If the video is paused, play it.
+                      _controller.play();
+                    }
+                  });
+                },
+                // Display the correct icon depending on the state of the player.
+                child: Icon(
+                  _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                ),
+              ),
+            )
+          // If the video is not yet initialized, display a spinner
           : Center(child: CircularProgressIndicator()),
     );
   }
