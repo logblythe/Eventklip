@@ -36,6 +36,7 @@ class ApiEndPoints {
   static const POST_IMAGES = "${BASE_URL}Blob/PostImages";
   //client apis
   static const CREATE_CLIENT_VIDEOS = "${BASE_URL}Clients/CreateClientVideos";
+  static const GET_ADMIN_VIDEOS = "${BASE_URL}Clients/GetVideosForAdmin";
 
 
 }

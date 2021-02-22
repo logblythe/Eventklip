@@ -1,4 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eventklip/api/folders_api.dart';
+import 'package:eventklip/di/injection.dart';
+import 'package:eventklip/models/create_qr_payload.dart';
+import 'package:eventklip/models/folder_model.dart';
 import 'package:eventklip/view_models/folder_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker_fork/flutter_cupertino_date_picker_fork.dart';
@@ -11,9 +15,9 @@ import 'package:eventklip/utils/resources/colors.dart' as colors;
 import 'package:provider/provider.dart';
 
 class QrFragment extends StatefulWidget {
-  final Function onBack;
+  final FolderModel folder;
 
-  const QrFragment({Key key, this.onBack}) : super(key: key);
+  const QrFragment({Key key, @required this.folder}) : super(key: key);
 
   @override
   _QrFragmentState createState() => _QrFragmentState();
@@ -28,44 +32,40 @@ class _QrFragmentState extends State<QrFragment> {
   final dateFocus = FocusNode();
   final durationFocus = FocusNode();
   String _expiryDate = '';
-  FolderState _provider;
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FolderState>(
-      builder: (context, model, child) {
-        _provider = model;
-        return Scaffold(
-          appBar: appBarLayout(
-            context,
-            "",
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: colors.white,
-              ),
-              onPressed: widget.onBack,
+    return Scaffold(
+      appBar: appBarLayout(
+        context,
+        "",
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: colors.white,
             ),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: formKey,
-              child: Stack(
-                children: [
-                  _provider.folderQrMap.containsKey(_provider.selectedFolder.id)
-                      ? buildQr()
-                      : buildColumn(context),
-                  Loader()
+            onPressed: () => Navigator.of(context).pop()),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: formKey,
+          child: Stack(
+            children: [
+              widget.folder.qrLocation != null
+                  ? buildQr()
+                  : buildColumn(context),
+              loading
+                  ? Loader()
                       .withSize(height: 40, width: 40)
                       .center()
-                      .visible(_provider.loading),
-                ],
-              ),
-            ),
+                      .visible(true)
+                  : Container(),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -128,8 +128,7 @@ class _QrFragmentState extends State<QrFragment> {
 
   Widget buildQr() {
     return Center(
-      child: CachedNetworkImage(
-          imageUrl: _provider.folderQrMap[_provider.selectedFolder.id]),
+      child: CachedNetworkImage(imageUrl: widget.folder.qrLocation),
     );
   }
 
@@ -145,14 +144,29 @@ class _QrFragmentState extends State<QrFragment> {
     );
   }
 
-  void handleCreateQr() {
+  Future<void> handleCreateQr() async {
     if (formKey.currentState.validate()) {
-      _provider.createQr(
-        _provider.selectedFolder.id,
-        int.parse(scansController.text),
-        _expiryDate,
-        int.parse(durationController.text),
-      );
+      FoldersApi _foldersApi = getIt.get<FoldersApi>();
+      try {
+        setState(() {
+          loading=true;
+        });
+        final response = await _foldersApi.createQr(CreateQRPayload(
+          eventId: widget.folder.id,
+          noOfScans: int.parse(scansController.text),
+          expiryDate: _expiryDate,
+          noOfImgLimit: 20,
+          noOfVideoLimit: 20,
+          duration: int.parse(durationController.text),
+        ).toJson());
+        if(response.success){
+
+        }
+      } catch (e) {
+        setState(() {
+          loading=false;
+        });
+      }
     }
   }
 }

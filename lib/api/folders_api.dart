@@ -4,6 +4,7 @@ import 'package:eventklip/api/api_helper.dart';
 import 'package:eventklip/api/client.dart';
 import 'package:eventklip/api/endpoints.dart';
 import 'package:eventklip/di/injection.dart';
+import 'package:eventklip/models/client_media.dart';
 import 'package:eventklip/models/create_folder_model.dart';
 import 'package:eventklip/models/create_qr_model.dart';
 import 'package:eventklip/models/file_upload_model.dart';
@@ -81,6 +82,18 @@ class FoldersApi extends IFolders with ApiHelper {
     return returnResponse<FileUploadModel>(
       response,
       modelCreator: (json) => FileUploadModel.fromJson(json),
+    );
+  }
+
+  Future<List<ClientMedia>> getAdminVideos(String eventId) async {
+    final response = await _dioClient.get(
+      ApiEndPoints.GET_ADMIN_VIDEOS,
+      queryParameters: {"EventId": eventId},
+      options: Options(headers: await getDefaultHeader(authenticate: true)),
+    );
+    return returnResponse<ClientMedia>(
+      response,
+      modelCreator: (json) => ClientMedia.fromJson(json),
     );
   }
 }

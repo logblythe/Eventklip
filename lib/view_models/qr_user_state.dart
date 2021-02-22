@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:eventklip/api/folders_api.dart';
 import 'package:eventklip/di/injection.dart';
 import 'package:eventklip/models/file_upload_model.dart';
+import 'package:eventklip/screens/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
@@ -20,7 +21,7 @@ class QrUserState extends ChangeNotifier {
     List<String> mimeDetails = lookupMimeType(filePath).split("/");
     String fileType = mimeDetails.first;
     String fileExtension = mimeDetails.last;
-    String videoDuration ="0";
+    String videoDuration = "0";
     if (fileType == "video") {
       final controller = VideoPlayerController.file(file);
       await controller.initialize();
@@ -33,19 +34,20 @@ class QrUserState extends ChangeNotifier {
         fileType,
         onSendProgress: onSendProgress,
       );
+      final user = await SharedPreferenceHelper.getUser();
+
       if (uploadRes.success) {
         final payload = {
           "id": uploadRes.fileId,
           "title": fileName,
-          "eventId": "1a9cba6b-9650-47ce-a696-5638e0ccb234",
-          //todo inject the event id
+          "eventId": user.eventId,
           "fileLocation": uploadRes.fileUrl,
           "videoFormat": fileExtension,
           "videoSize": fileSize,
           "duration": videoDuration
         };
-        // final createRes = await _foldersApi.createClientVideo(payload);
-        // print('created $createRes');
+        final createRes = await _foldersApi.createClientVideo(payload);
+        print('created $createRes');
       }
     } catch (e) {
       print('error $e');

@@ -5,13 +5,13 @@ class AuthToken {
   AuthToken({this.accessToken, this.userName});
 
   AuthToken.fromJson(Map<String, dynamic> json) {
-    accessToken = json['access_Token'];
+    accessToken = json['accessToken'];
     userName = json['userName'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['access_Token'] = this.accessToken;
+    data['accessToken'] = this.accessToken;
     data['userName'] = this.userName;
     return data;
   }
