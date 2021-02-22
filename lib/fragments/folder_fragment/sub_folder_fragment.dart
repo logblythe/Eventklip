@@ -50,7 +50,8 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
                 onTap: () {
                   if (widget.folder.qrLocation == null) {}
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => QrFragment(
+                      builder: (_) =>
+                          QrFragment(
                             folder: widget.folder,
                           )));
                 }).paddingRight(12),
@@ -59,23 +60,23 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
         body: loading
             ? Loader()
             : RefreshIndicator(
-                onRefresh: getAllVideos,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    clientMedias.isEmpty
-                        ? emptyVideos()
-                        : Expanded(
-                            child: ListView.builder(
-                              itemBuilder: (context, position) {
-                                return ClientMediaItem(clientMedias[position]);
-                              },
-                              itemCount: 1,
-                            ),
-                          )
-                  ],
+          onRefresh: getAllVideos,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              clientMedias.isEmpty
+                  ? emptyVideos()
+                  : Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, position) {
+                    return ClientMediaItem(clientMedias[position]);
+                  },
+                  itemCount: clientMedias.length,
                 ),
-              ));
+              )
+            ],
+          ),
+        ));
   }
 
   Widget emptyVideos() {
@@ -88,7 +89,7 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
           child: NoFolderWidget(
             title: 'No records found for ${widget.folder.name}',
             subtitle:
-                'Images and videos will be available once users upload to this event.',
+            'Images and videos will be available once users upload to this event.',
           ),
         )
       ],
@@ -103,6 +104,9 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
         loading = true;
       });
       final videos = await _foldersApi.getAdminVideos(widget.folder.id);
+      videos.sort((a, b) {
+        return b.createdDate.compareTo(a.createdDate);
+      });
       setState(() {
         clientMedias = videos;
         loading = false;
@@ -124,23 +128,34 @@ class ClientMediaItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(clientMedia.fileLocation);
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => VideoViewScreen(
-                  videoUrl: clientMedia.fileLocation,
-
-                )));
+        if (clientMedia.duration != "0")
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) =>
+                  VideoViewScreen(
+                    videoUrl: clientMedia.fileLocation,
+                  )));
       },
       child: Container(
+        color: (clientMedia.duration != "0") ? Colors.red : null,
         padding: EdgeInsets.all(spacing_standard),
-        width: MediaQuery.of(context).size.width - 16,
-        height: (MediaQuery.of(context).size.width - 16) * 9 / 16,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width - 16,
+        height: (MediaQuery
+            .of(context)
+            .size
+            .width - 16) * 9 / 16,
         child: Stack(
           alignment: Alignment.bottomLeft,
           children: [
             CachedNetworkImage(
-              imageUrl: clientMedia.thumbnailLocation,
+              imageUrl: clientMedia.fileLocation,
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
             ),
             Container(
               height: double.infinity,
