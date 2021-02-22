@@ -16,7 +16,6 @@ import 'package:video_player/video_player.dart';
 class FolderState with ChangeNotifier {
   FoldersApi _foldersApi = getIt.get<FoldersApi>();
   bool _loading = false;
-  bool _listView = false;
   List<FolderModel> _folders = [];
   Map<String, String> folderQrMap = {};
 
@@ -28,7 +27,6 @@ class FolderState with ChangeNotifier {
 
   bool get loading => _loading;
 
-  bool get listView => _listView;
 
   bool get qrExists => false;
 
@@ -49,6 +47,9 @@ class FolderState with ChangeNotifier {
     notifyListeners();
     try {
       _folders = await _foldersApi.getFolders();
+      _folders.sort((a, b) {
+        return b.createdDate.compareTo(a.createdDate);
+      });
     } catch (e) {
       print('error $e');
     } finally {
@@ -104,10 +105,6 @@ class FolderState with ChangeNotifier {
     }
   }
 
-  void toggleListView() {
-    _listView = !listView;
-    notifyListeners();
-  }
 
   void selectFolder(FolderModel folderModel) {
     _selectedFolder = folderModel;

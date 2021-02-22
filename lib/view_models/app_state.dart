@@ -69,6 +69,8 @@ class EventklipAppState with ChangeNotifier {
 
   Future<UserProfile> getUserProfile(String email, String password) async {
     final authToken = await _authService.authenticate(email, password);
+    print(authToken.toJson());
+    print("AuthToken");
     await SharedPreferenceHelper.saveToken(authToken.accessToken);
     final profile = await _authService.getUserProfile();
     if (profile.isPasswordUpdated) {

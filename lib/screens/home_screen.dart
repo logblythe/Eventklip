@@ -1,4 +1,5 @@
-import 'package:eventklip/fragments/folder_fragment/folder_fragment.dart';
+import 'package:eventklip/fragments/folder_fragment/parent_folders_fragment.dart';
+import 'package:eventklip/view_models/folder_state.dart';
 import 'package:eventklip/view_models/home_app_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,73 +27,67 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<HomeAppState>(
-      create: (_) => HomeAppState(),
-      builder: (context, widget) =>
-          WillPopScope(
-              onWillPop: () async {
-                if (_selectedIndex == 0) return true;
-                setState(() {
-                  _selectedIndex = 0;
-                });
-                return false;
-              },
-              child: Scaffold(
-                  body: IndexedStack(
-                    children: [
-                      HomeFragment(),
-                      SearchFragment(),
-                      // MyFilesFragment(),
-                      FolderFragment(),
-                      MoreFragment(),
-                    ],
-                    index: _selectedIndex,
-                  ),
-                  bottomNavigationBar: Container(
-                    decoration: BoxDecoration(
-                        color: Theme
-                            .of(context)
-                            .splashColor,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey.withOpacity(0.05),
-                              offset: Offset.fromDirection(3, 1),
-                              spreadRadius: 3,
-                              blurRadius: 5)
-                        ]),
-                    child: AppBottomNavigationBar(
-                      backgroundColor: Theme
-                          .of(context)
-                          .splashColor,
-                      items: const <AppBottomNavigationBarItem>[
-                        AppBottomNavigationBarItem(icon: ic_home),
-                        AppBottomNavigationBarItem(icon: ic_search),
-                        // AppBottomNavigationBarItem(
-                        //   icon: ic_folder,
-                        // ),
-                        AppBottomNavigationBarItem(icon: ic_folder),
-                        AppBottomNavigationBarItem(icon: ic_user),
-                      ],
-                      currentIndex: _selectedIndex,
-                      unselectedIconTheme: IconThemeData(
-                          color: Theme
-                              .of(context)
-                              .textTheme
-                              .headline6
-                              .color,
-                          size: 22),
-                      selectedIconTheme: IconThemeData(
-                          color: Theme
-                              .of(context)
-                              .primaryColor, size: 22),
-                      onTap: (index) async {
-                        setState(() {
-                          _selectedIndex = index;
-                        });
-                      },
-                      type: AppBottomNavigationBarType.fixed,
-                    ),
-                  ))),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => HomeAppState(),
+        ),
+        ChangeNotifierProvider(create: (_) => FolderState())
+      ],
+      builder: (context, widget) => WillPopScope(
+          onWillPop: () async {
+            if (_selectedIndex == 0) return true;
+            setState(() {
+              _selectedIndex = 0;
+            });
+            return false;
+          },
+          child: Scaffold(
+              body: IndexedStack(
+                children: [
+                  HomeFragment(),
+                  SearchFragment(),
+                  // MyFilesFragment(),
+                  ParentFoldersFragment(),
+                  MoreFragment(),
+                ],
+                index: _selectedIndex,
+              ),
+              bottomNavigationBar: Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).splashColor,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.withOpacity(0.05),
+                          offset: Offset.fromDirection(3, 1),
+                          spreadRadius: 3,
+                          blurRadius: 5)
+                    ]),
+                child: AppBottomNavigationBar(
+                  backgroundColor: Theme.of(context).splashColor,
+                  items: const <AppBottomNavigationBarItem>[
+                    AppBottomNavigationBarItem(icon: ic_home),
+                    AppBottomNavigationBarItem(icon: ic_search),
+                    // AppBottomNavigationBarItem(
+                    //   icon: ic_folder,
+                    // ),
+                    AppBottomNavigationBarItem(icon: ic_folder),
+                    AppBottomNavigationBarItem(icon: ic_user),
+                  ],
+                  currentIndex: _selectedIndex,
+                  unselectedIconTheme: IconThemeData(
+                      color: Theme.of(context).textTheme.headline6.color,
+                      size: 22),
+                  selectedIconTheme: IconThemeData(
+                      color: Theme.of(context).primaryColor, size: 22),
+                  onTap: (index) async {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                  type: AppBottomNavigationBarType.fixed,
+                ),
+              ))),
     );
   }
 }

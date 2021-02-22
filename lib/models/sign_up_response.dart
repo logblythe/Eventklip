@@ -52,14 +52,14 @@ class Value {
   Value({this.accessToken, this.userName,this.fullName});
 
   Value.fromJson(Map<String, dynamic> json) {
-    accessToken = json['access_Token'];
+    accessToken = json['accessToken'];
     fullName = json['fullName'];
     userName = json['userName'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['access_Token'] = this.accessToken;
+    data['accessToken'] = this.accessToken;
     data['userName'] = this.userName;
     data['fullName'] = this.fullName;
     return data;

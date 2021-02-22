@@ -1,3 +1,4 @@
+import 'package:eventklip/fragments/folder_fragment/sub_folder_fragment.dart';
 import 'package:eventklip/fragments/folder_fragment/widgets/folder_grid_widget.dart';
 import 'package:eventklip/fragments/folder_fragment/widgets/folder_list_widget.dart';
 import 'package:eventklip/fragments/folder_fragment/widgets/no_folder_widget.dart';
@@ -26,6 +27,13 @@ class _ParentFoldersFragmentState extends State<ParentFoldersFragment> {
   String _name = '';
   String _description = '';
   FolderState provider;
+  bool isListView = false;
+
+  toggleListView() {
+    setState(() {
+      isListView = !isListView;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +47,8 @@ class _ParentFoldersFragmentState extends State<ParentFoldersFragment> {
             keyString(context, "folders"),
             actions: [
               InkWell(
-                child:
-                    Icon(model.listView ? Icons.grid_view : Icons.list_rounded),
-                onTap: model.toggleListView,
+                child: Icon(isListView ? Icons.grid_view : Icons.list_rounded),
+                onTap: toggleListView,
               ).paddingRight(12),
             ],
           ),
@@ -53,9 +60,15 @@ class _ParentFoldersFragmentState extends State<ParentFoldersFragment> {
                 children: [
                   folders.isEmpty
                       ? NoFolderWidget()
-                      : model.listView
-                          ? FolderListWidget(folders: folders)
-                          : FolderGridWidget(folders: folders),
+                      : isListView
+                          ? FolderListWidget(
+                              folders: folders,
+                              onClickItem: (folderModel) =>
+                                  _onClickItem(folderModel))
+                          : FolderGridWidget(
+                              folders: folders,
+                              onClickItem: (folderModel) =>
+                                  _onClickItem(folderModel)),
                   Loader()
                       .withSize(height: 40, width: 40)
                       .center()
@@ -143,5 +156,19 @@ class _ParentFoldersFragmentState extends State<ParentFoldersFragment> {
       formKey.currentState.save();
       Navigator.pop(context, true);
     }
+  }
+
+  handleQrClick(FolderModel folderModel) {}
+
+  handleBack() {}
+
+  _onClickItem(
+    FolderModel folderModel,
+  ) {
+    return Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return FolderEventDetailFragment(
+        folder: folderModel,
+      );
+    }));
   }
 }

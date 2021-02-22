@@ -3,6 +3,7 @@ class FolderModel {
   String name;
   String description;
   bool isActive;
+  String qrLocation;
   String parentFolder;
   String createdById;
   String createdDate;
@@ -12,6 +13,7 @@ class FolderModel {
       {this.id,
         this.name,
         this.description,
+        this.qrLocation,
         this.isActive,
         this.parentFolder,
         this.createdById,
@@ -22,6 +24,7 @@ class FolderModel {
     id = json['id'];
     name = json['name'];
     description = json['description'];
+    qrLocation = json['qrLocation'];
     isActive = json['isActive'];
     parentFolder = json['parentFolder'];
     createdById = json['createdById'];
@@ -33,6 +36,7 @@ class FolderModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
+    data['qrLocation'] = this.qrLocation;
     data['description'] = this.description;
     data['isActive'] = this.isActive;
     data['parentFolder'] = this.parentFolder;

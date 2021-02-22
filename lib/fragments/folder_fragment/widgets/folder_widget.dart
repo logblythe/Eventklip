@@ -1,3 +1,4 @@
+import 'package:eventklip/fragments/folder_fragment/sub_folder_fragment.dart';
 import 'package:eventklip/models/folder_model.dart';
 import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/resources/size.dart';
@@ -12,54 +13,57 @@ import '../../../utils/resources/size.dart';
 
 class FolderWidget extends StatelessWidget {
   final FolderModel folderModel;
+  final bool isListView;
+  final Function(FolderModel folderModel) onClickItem;
 
-  const FolderWidget({Key key, this.folderModel}) : super(key: key);
+  FolderWidget({Key key, this.folderModel, this.isListView, this.onClickItem})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FolderState>(
-      builder: (context, model, child) {
-        return InkWell(
-          onTap: () async {
-            model.selectFolder(folderModel);
-          },
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: RowOrColumn(
-                isRow: model.listView,
-                children: [
-                  Icon(
-                    Icons.folder_open_rounded,
-                    size: 48,
-                    color: colorPrimary,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: spacing_standard_new),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        text(context, folderModel.name ?? 'Default folder name',
-                            fontSize: ts_extra_normal,
-                            fontFamily: font_bold,
-                            textColor: Colors.white),
-                        model.listView
-                            ? MoreLessText(folderModel.description ??
-                                'This is a default folder description')
-                            : text(context, folderModel.name ?? "Default")
-                      ],
-                    ),
-                  )
-                ],
+    return InkWell(
+      onTap: () => onClickItem(folderModel),
+
+      // model.selectFolder(folderModel);
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: RowOrColumn(
+            isRow: isListView,
+            children: [
+              Icon(
+                Icons.folder_open_rounded,
+                size: 48,
+                color: colorPrimary,
               ),
-            ),
+              Padding(
+                padding: EdgeInsets.only(right: spacing_standard_new),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    text(context, folderModel.name ?? 'Default folder name',
+                        fontSize: ts_extra_normal,
+                        fontFamily: font_bold,
+                        textColor: Colors.white),
+                    isListView
+                        ? MoreLessText(folderModel.description ??
+                            'This is a default folder description')
+                        : text(context, folderModel.name ?? "Default")
+                  ],
+                ),
+              )
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
+
+  handleQrClick(FolderModel folderModel) {}
+
+  handleBack(FolderModel folderModel) {}
 }
 
 class RowOrColumn extends StatelessWidget {
