@@ -15,29 +15,32 @@ class NoFolderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(icon ?? Icons.folder),
-          SizedBox(height: spacing_standard),
-          text(context, title ?? 'No folders found',
-              fontSize: ts_extra_normal,
-              fontFamily: font_bold,
-              textColor: colors.textColorPrimary),
-          Flexible(
-            child: text(
-              context,
-              subtitle ??
-                  "You can create a folder by clicking on the '+' button",
-              fontSize: ts_medium,
-              maxLine: 4,
-              isCentered: true,
-              textColor: colors.textColorPrimary,
+      child: Padding(
+        padding: const EdgeInsets.all(spacing_standard_new),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(icon ?? Icons.folder),
+            SizedBox(height: spacing_standard),
+            text(context, title ?? 'No folders found',
+                fontSize: ts_extra_normal,
+                fontFamily: font_bold,
+                textColor: colors.textColorPrimary),
+            Flexible(
+              child: text(
+                context,
+                subtitle ??
+                    "You can create a folder by clicking on the '+' button",
+                fontSize: ts_medium,
+                maxLine: 4,
+                isCentered: true,
+                textColor: colors.textColorPrimary,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

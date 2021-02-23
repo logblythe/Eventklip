@@ -5,6 +5,7 @@ import 'package:eventklip/models/create_qr_payload.dart';
 import 'package:eventklip/models/folder_model.dart';
 import 'package:eventklip/view_models/folder_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_cupertino_date_picker_fork/flutter_cupertino_date_picker_fork.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -27,10 +28,14 @@ class _QrFragmentState extends State<QrFragment> {
   final formKey = GlobalKey<FormState>();
   final scansController = TextEditingController();
   final durationController = TextEditingController();
+  final videoLimitController = TextEditingController();
+  final imageLimitController = TextEditingController();
   final dateController = TextEditingController();
   final scansFocus = FocusNode();
   final dateFocus = FocusNode();
   final durationFocus = FocusNode();
+  final imageLimitFocus = FocusNode();
+  final videoLimitFocus = FocusNode();
   String _expiryDate = '';
   bool loading = false;
 
@@ -85,6 +90,7 @@ class _QrFragmentState extends State<QrFragment> {
           formField(
             context,
             "hint_no_of_scans",
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             maxLine: 1,
             controller: scansController,
             keyboardType: TextInputType.number,
@@ -111,11 +117,36 @@ class _QrFragmentState extends State<QrFragment> {
             context,
             "hint_video_duration",
             maxLine: 1,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             controller: durationController,
             keyboardType: TextInputType.number,
             validator: (value) => value.isEmpty ? "Required" : null,
             textInputAction: TextInputAction.next,
+            nextFocus: imageLimitFocus,
             focusNode: durationFocus,
+          ).paddingBottom(spacing_standard_new),
+          formField(
+            context,
+            "hint_image_limit",
+            maxLine: 1,
+            controller: imageLimitController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            validator: (value) => value.isEmpty ? "Required" : null,
+            textInputAction: TextInputAction.next,
+            nextFocus: videoLimitFocus,
+            focusNode: imageLimitFocus,
+          ).paddingBottom(spacing_standard_new),
+          formField(
+            context,
+            "hint_video_limit",
+            maxLine: 1,
+            controller: videoLimitController,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            keyboardType: TextInputType.number,
+            validator: (value) => value.isEmpty ? "Required" : null,
+            textInputAction: TextInputAction.next,
+            focusNode: videoLimitFocus,
           ).paddingBottom(spacing_standard_new),
           Align(
             child: button(context, 'Create', handleCreateQr),
@@ -149,22 +180,20 @@ class _QrFragmentState extends State<QrFragment> {
       FoldersApi _foldersApi = getIt.get<FoldersApi>();
       try {
         setState(() {
-          loading=true;
+          loading = true;
         });
         final response = await _foldersApi.createQr(CreateQRPayload(
           eventId: widget.folder.id,
           noOfScans: int.parse(scansController.text),
           expiryDate: _expiryDate,
-          noOfImgLimit: 20,
-          noOfVideoLimit: 20,
+          noOfImgLimit: int.parse(imageLimitController.text),
+          noOfVideoLimit: int.parse(videoLimitController.text),
           duration: int.parse(durationController.text),
         ).toJson());
-        if(response.success){
-
-        }
+        if (response.success) {}
       } catch (e) {
         setState(() {
-          loading=false;
+          loading = false;
         });
       }
     }

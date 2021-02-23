@@ -8,6 +8,7 @@ import 'package:eventklip/models/client_media.dart';
 import 'package:eventklip/models/folder_model.dart';
 import 'package:eventklip/screens/eventklip_admin_video_view.dart';
 import 'package:eventklip/screens/eventklip_movie_detail_screen.dart';
+import 'package:eventklip/screens/question_answer_setup_screen.dart';
 import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/resources/size.dart';
 import 'package:flutter/material.dart';
@@ -50,8 +51,16 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
                 onTap: () {
                   if (widget.folder.qrLocation == null) {}
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) =>
-                          QrFragment(
+                      builder: (_) => QrFragment(
+                            folder: widget.folder,
+                          )));
+                }).paddingRight(12),
+            InkWell(
+                child: Icon(Icons.question_answer),
+                onTap: () {
+                  if (widget.folder.qrLocation == null) {}
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => QuestionAnswerSetupScreen(
                             folder: widget.folder,
                           )));
                 }).paddingRight(12),
@@ -60,23 +69,23 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
         body: loading
             ? Loader()
             : RefreshIndicator(
-          onRefresh: getAllVideos,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              clientMedias.isEmpty
-                  ? emptyVideos()
-                  : Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, position) {
-                    return ClientMediaItem(clientMedias[position]);
-                  },
-                  itemCount: clientMedias.length,
+                onRefresh: getAllVideos,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    clientMedias.isEmpty
+                        ? emptyVideos()
+                        : Expanded(
+                            child: ListView.builder(
+                              itemBuilder: (context, position) {
+                                return ClientMediaItem(clientMedias[position]);
+                              },
+                              itemCount: clientMedias.length,
+                            ),
+                          )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ));
+              ));
   }
 
   Widget emptyVideos() {
@@ -84,13 +93,10 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(spacing_standard_new),
-          child: NoFolderWidget(
-            title: 'No records found for ${widget.folder.name}',
-            subtitle:
-            'Images and videos will be available once users upload to this event.',
-          ),
+        NoFolderWidget(
+          title: 'No records found for ${widget.folder.name}',
+          subtitle:
+              'Images and videos will be available once users upload to this event.',
         )
       ],
     );
@@ -132,23 +138,28 @@ class ClientMediaItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (clientMedia.duration != "0")
+        {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) =>
-                  VideoViewScreen(
-                    videoUrl: clientMedia.fileLocation,
-                  )));
+              builder: (context) => VideoViewScreen(
+                videoUrl: clientMedia.fileLocation,
+              )));
+        }else{
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) {
+                  // If this is an image, navigate to ImageScreen
+                  return ImageScreen(imageUrl: clientMedia.fileLocation);
+                }
+            ),
+          );
+
+        }
       },
       child: Container(
-        color: (clientMedia.duration != "0") ? Colors.red : null,
         padding: EdgeInsets.all(spacing_standard),
-        width: MediaQuery
-            .of(context)
-            .size
-            .width - 16,
-        height: (MediaQuery
-            .of(context)
-            .size
-            .width - 16) * 9 / 16,
+        width: MediaQuery.of(context).size.width - 16,
+        height: (MediaQuery.of(context).size.width - 16) * 9 / 16,
         child: Stack(
           alignment: Alignment.bottomLeft,
           children: [

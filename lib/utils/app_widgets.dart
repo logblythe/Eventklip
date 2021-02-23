@@ -9,6 +9,7 @@ import 'package:eventklip/utils/percent_indicator.dart';
 import 'package:eventklip/utils/resources/colors.dart' as colors;
 import 'package:eventklip/utils/resources/size.dart';
 import 'package:eventklip/utils/slider_widget.dart';
+import 'package:flutter/services.dart';
 import 'app_localizations.dart';
 import 'constants.dart';
 import 'dots_indicator/dots_decorator.dart';
@@ -650,6 +651,7 @@ Widget formField(context, hint,
     keyboardType = TextInputType.text,
     FormFieldValidator<String> validator,
     onSaved,
+    List<TextInputFormatter>  inputFormatters,
     textInputAction = TextInputAction.next,
     FocusNode focusNode,
     FocusNode nextFocus,
@@ -660,6 +662,7 @@ Widget formField(context, hint,
     onTap}) {
   return TextFormField(
     onTap: onTap,
+    inputFormatters: inputFormatters,
     controller: controller,
     obscureText: isPassword && !isPasswordVisible,
     readOnly: readOnly,

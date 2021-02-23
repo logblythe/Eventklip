@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:eventklip/fragments/comment_fragment.dart';
 import 'package:eventklip/fragments/video_images_list_fragment/components/context_menu.dart';
@@ -220,10 +221,12 @@ class AssetThumbnail extends StatelessWidget {
 class ImageScreen extends StatelessWidget {
   const ImageScreen({
     Key key,
-    @required this.imageFile,
+    this.imageFile,
+    this.imageUrl,
   }) : super(key: key);
 
   final File imageFile;
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -235,10 +238,10 @@ class ImageScreen extends StatelessWidget {
       body: Container(
         color: Colors.black,
         alignment: Alignment.center,
-        child: Image.file(
+        child: imageFile!=null ? Image.file(
           imageFile,
           fit: BoxFit.fitWidth,
-        ),
+        ) : CachedNetworkImage(imageUrl: imageUrl),
       ),
     );
   }
