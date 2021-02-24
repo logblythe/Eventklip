@@ -49,7 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarLayout(context, "Sign up to EventClip"),
+      appBar: appBarLayout(context, "Sign up to EventKlip"),
       body: Stack(
         alignment: Alignment.center,
         children: <Widget>[

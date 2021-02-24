@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:eventklip/models/failure.dart';
 import 'package:eventklip/screens/forgot_password_screen.dart';
-import 'package:eventklip/screens/qr_users_home_screen.dart';
 import 'package:eventklip/screens/qr_scanner_view.dart';
-import 'package:eventklip/screens/sign_up_screen.dart';
 import 'package:eventklip/utils/resources/colors.dart';
 import 'package:eventklip/view_models/app_state.dart';
 import 'package:flutter/cupertino.dart';
@@ -138,7 +135,9 @@ class SignInScreenState extends State<SignInScreen> {
               color: colorPrimary.withOpacity(0.3),
               borderRadius: BorderRadius.circular(16),
             ),
-          ).paddingSymmetric(horizontal: spacing_standard_new).paddingBottom(spacing_standard_new)
+          )
+            .paddingSymmetric(horizontal: spacing_standard_new)
+            .paddingBottom(spacing_standard_new)
         : Container();
 
     return Scaffold(
@@ -335,24 +334,24 @@ class _WebViewEventClipState extends State<WebViewEventClip> {
   void initState() {
     flutterWebViewPlugin.onUrlChanged.listen((String url) {
       if (mounted) {
-        if (url.contains("https://www.boxklip.com/Home/Dashboard")) {
+        if (url.contains("https://dev.boxklip.com/Home/Dashboard")) {
           Navigator.of(context).pop();
           toast("Thank you for signing up with us. Please login.");
         }
       }
     });
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return WebviewScaffold(
-      enableAppScheme: true,
-      url: 'https://www.boxklip.com',
+      // url: 'https://boxklip.com/Account/Register?BuyId=47992fe9-0601-499a-8f2e-4d88ec6c3932',
+      url: 'https://dev.boxklip.com/Account/Register?BuyId=47992fe9-0601-499a-8f2e-4d88ec6c3932',
       appBar: new AppBar(
-        title: const Text('EventClip'),
+        title: const Text('EventKlip'),
       ),
+      ignoreSSLErrors: true,
       bottomNavigationBar: BottomAppBar(
         child: Row(
           children: <Widget>[
