@@ -138,7 +138,7 @@ class _GalleryFragmentState extends State<GalleryFragment> {
           isUploaded: false,
           path: file.path);
       int mediaId = await _media.save();
-      final res = await _provider.uploadFile(file.path, (count, total) {
+      final res = await _provider.saveFile(file.path, (count, total) {
         setState(() {
           double progress = count / total;
           if (_mediaProgress.containsKey(mediaId)) {

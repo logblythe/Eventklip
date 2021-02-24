@@ -726,7 +726,6 @@ class _CaptureScreenState extends State<CaptureScreen>
       if (mounted) setState(() {});
       if (file != null) {
         widget.onVideoCaptured(file);
-
         videoFile = file;
         _startVideoPlayer();
       }

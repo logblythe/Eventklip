@@ -5,6 +5,7 @@ class Question {
   String createdById;
   String lastModifiedDate;
   int duration;
+  bool isAnswered = false;
 
   Question({this.id,this.question, this.eventId, this.createdById, this.duration});
 

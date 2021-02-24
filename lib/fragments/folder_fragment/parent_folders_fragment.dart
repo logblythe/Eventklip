@@ -165,10 +165,15 @@ class _ParentFoldersFragmentState extends State<ParentFoldersFragment> {
   _onClickItem(
     FolderModel folderModel,
   ) {
-    return Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return FolderEventDetailFragment(
-        folder: folderModel,
-      );
-    }));
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return FolderEventDetailFragment(
+            folder: folderModel,
+          );
+        },
+      ),
+    );
   }
 }

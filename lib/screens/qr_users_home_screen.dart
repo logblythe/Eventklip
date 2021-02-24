@@ -27,54 +27,54 @@ class QrUsersHomeScreenState extends State<QrUsersHomeScreen> {
     return ChangeNotifierProvider<QrUserState>(
       create: (_) => QrUserState(),
       builder: (context, widget) => WillPopScope(
-          onWillPop: () async {
-            if (_selectedIndex == 0) return true;
-            setState(() {
-              _selectedIndex = 0;
-            });
-            return false;
-          },
-          child: Scaffold(
-              body: Center(
-                child: _selectedIndex == 0
-                    ? GalleryFragment()
-                    : _selectedIndex == 1
-                        ? QuestionAnswerFragment()
-                        : MoreFragmentQrUsers(),
-              ),
-              bottomNavigationBar: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).splashColor,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey.withOpacity(0.05),
-                          offset: Offset.fromDirection(3, 1),
-                          spreadRadius: 3,
-                          blurRadius: 5)
-                    ]),
-                child: AppBottomNavigationBar(
-                  backgroundColor: Theme.of(context).splashColor,
-                  items: const <AppBottomNavigationBarItem>[
-                    AppBottomNavigationBarItem(
-                      icon: ic_video,
-                    ),
-                    AppBottomNavigationBarItem(icon: ic_faq),
-                    AppBottomNavigationBarItem(icon: ic_user),
-                  ],
-                  currentIndex: _selectedIndex,
-                  unselectedIconTheme: IconThemeData(
-                      color: Theme.of(context).textTheme.headline6.color,
-                      size: 22),
-                  selectedIconTheme: IconThemeData(
-                      color: Theme.of(context).primaryColor, size: 22),
-                  onTap: (index) async {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
-                  type: AppBottomNavigationBarType.fixed,
-                ),
-              ))),
+        onWillPop: () async {
+          if (_selectedIndex == 0) return true;
+          setState(() {
+            _selectedIndex = 0;
+          });
+          return false;
+        },
+        child: Scaffold(
+          body: Center(
+            child: _selectedIndex == 0
+                ? GalleryFragment()
+                : _selectedIndex == 1
+                    ? QuestionAnswerFragment()
+                    : MoreFragmentQrUsers(),
+          ),
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).splashColor,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey.withOpacity(0.05),
+                    offset: Offset.fromDirection(3, 1),
+                    spreadRadius: 3,
+                    blurRadius: 5),
+              ],
+            ),
+            child: AppBottomNavigationBar(
+              backgroundColor: Theme.of(context).splashColor,
+              items: const <AppBottomNavigationBarItem>[
+                AppBottomNavigationBarItem(icon: ic_video),
+                AppBottomNavigationBarItem(icon: ic_faq),
+                AppBottomNavigationBarItem(icon: ic_user),
+              ],
+              currentIndex: _selectedIndex,
+              unselectedIconTheme: IconThemeData(
+                  color: Theme.of(context).textTheme.headline6.color, size: 22),
+              selectedIconTheme: IconThemeData(
+                  color: Theme.of(context).primaryColor, size: 22),
+              onTap: (index) async {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              type: AppBottomNavigationBarType.fixed,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

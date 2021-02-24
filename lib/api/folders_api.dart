@@ -87,6 +87,19 @@ class FoldersApi extends IFolders with ApiHelper {
     );
   }
 
+  Future<FileUploadModel> createAnswerVideo(
+      Map<String, dynamic> payload) async {
+    final response = await _dioClient.post(
+      ApiEndPoints.CREATE_ANSWER_VIDEOS,
+      data: payload,
+      options: Options(headers: await getDefaultHeader(authenticate: true)),
+    );
+    return returnResponse<FileUploadModel>(
+      response,
+      modelCreator: (json) => FileUploadModel.fromJson(json),
+    );
+  }
+
   Future<List<ClientMedia>> getAdminVideos(String eventId) async {
     final response = await _dioClient.get(
       ApiEndPoints.GET_ADMIN_VIDEOS,
@@ -148,4 +161,5 @@ class FoldersApi extends IFolders with ApiHelper {
       modelCreator: (json) => BasicServerResponse.fromJson(json),
     );
   }
+
 }

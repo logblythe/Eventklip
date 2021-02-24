@@ -34,13 +34,16 @@ class ApiEndPoints {
   //blob apis
   static const POST_VIDEO = "${BASE_URL}Blob/PostVideo";
   static const POST_IMAGES = "${BASE_URL}Blob/PostImages";
+
   //client apis
   static const CREATE_CLIENT_VIDEOS = "${BASE_URL}Clients/CreateClientVideos";
   static const GET_ADMIN_VIDEOS = "${BASE_URL}Clients/GetVideosForAdmin";
   static const GET_QUESTIONS_FOR_EVENT = "${BASE_URL}Clients/GetQuestion";
+  static const CREATE_ANSWER_VIDEOS="${BASE_URL}Clients/CreateAnswerVid";
   static const POST_QUESTIONS_FOR_EVENT = "${BASE_URL}Clients/PostQuestion";
   static const UPDATE_QUESTIONS_FOR_EVENT = "${BASE_URL}Clients/EditQuestions";
   static const DELETE_QUESTION = "${BASE_URL}Clients/DeleteQuestion";
+
 
 
 }
