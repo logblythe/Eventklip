@@ -5,6 +5,7 @@ import 'package:eventklip/models/user_profile.dart';
 import 'package:eventklip/screens/capture_screen.dart';
 import 'package:eventklip/screens/shared_preferences.dart';
 import 'package:eventklip/ui/parts/eventklip_video_player.dart';
+import 'package:eventklip/ui/widgets/upload_indicator_widget.dart';
 import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/resources/colors.dart';
 import 'package:eventklip/utils/resources/size.dart';
@@ -30,6 +31,8 @@ class QuestionAnswerFragment extends StatefulWidget {
 class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
   var selectedQuestionIndex = 0;
   QrUserState _provider;
+  List<Question> _questions;
+  Map<String, double> _mediaProgress = {};
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +46,13 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
       body: Consumer<QrUserState>(
         builder: (context, state, child) {
           _provider = state;
-          List<Question> questions = state.questions;
+          _questions = _provider.questions;
           return Padding(
             padding: const EdgeInsets.all(spacing_standard_new),
             child: Stack(
               children: [
-                questions.isNotEmpty
-                    ? buildBody(questions)
+                _questions.isNotEmpty
+                    ? buildBody()
                     : NoFolderWidget(
                         title: "No questions found",
                         subtitle: "",
@@ -57,7 +60,7 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
                 Loader()
                     .withSize(height: 40, width: 40)
                     .center()
-                    .visible(state.loading)
+                    .visible(_provider.loading)
               ],
             ),
           );
@@ -66,24 +69,32 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
     );
   }
 
-  Column buildBody(List<Question> questions) {
+  Column buildBody() {
+    Question _question = _questions[selectedQuestionIndex];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // EventklipVideoPlayer(
-        //   videoUrl: questions[selectedQuestionIndex].question,
-        //   videoTitle:
-        //       questions[selectedQuestionIndex].question,
-        //   disableNavigations: true,
-        //   onVideoEnd: () {
-        //     setState(() {
-        //       selectedQuestionIndex =
-        //           selectedQuestionIndex < questions.length - 1
-        //               ? selectedQuestionIndex + 1
-        //               : 0;
-        //     });
-        //   },
-        // ).paddingBottom(spacing_standard_new),
+        _question.videoUrl != null
+            ? EventklipVideoPlayer(
+                videoUrl: _question.videoUrl,
+                videoTitle: _question.question,
+                disableNavigations: true,
+                onVideoEnd: () {
+                  setState(() {
+                    selectedQuestionIndex =
+                        selectedQuestionIndex < _questions.length - 1
+                            ? selectedQuestionIndex + 1
+                            : 0;
+                  });
+                },
+              ).paddingBottom(spacing_standard_new)
+            : SizedBox(
+                height: MediaQuery.of(context).size.width * 9 / 16,
+                child: NoFolderWidget(
+                  title: "No video available",
+                  subtitle: "Videos become available once you have posted them",
+                ),
+              ).paddingBottom(spacing_standard_new),
         Expanded(
           child: ListView.builder(
             itemBuilder: (context, position) {
@@ -91,78 +102,91 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
                 duration: Duration(milliseconds: 300),
                 decoration: BoxDecoration(
                   border: selectedQuestionIndex == position
-                      ? Border.all(
-                          color: colorPrimary,
-                          width: 2,
-                        )
+                      ? Border.all(color: colorPrimary, width: 2)
                       : null,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: GestureDetector(
-                  onTap: () {
-                    if (questions[position].isAnswered) {
-                      setState(() => selectedQuestionIndex = position);
-                    } else {
-                      postAnswer(context);
-                    }
-                  },
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                questions[position].isAnswered
-                                    ? Icons.check_circle
-                                    : Icons.add,
-                                color: Colors.greenAccent,
-                              ).paddingRight(spacing_standard_new),
-                              text(context, questions[position].question),
-                            ],
-                          ),
-                          questions[position].isAnswered
-                              ? Container()
-                              : Icon(Icons.video_call)
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                child: buildQuestionWidget(position, context),
               ).paddingOnly(bottom: 8);
             },
-            padding: EdgeInsets.all(0),
-            itemCount: questions.length,
+            itemCount: _questions.length,
           ),
         )
       ],
     );
   }
 
-  void postAnswer(BuildContext context) async {
+  GestureDetector buildQuestionWidget(int position, BuildContext context) {
+    Question _question = _questions[position];
+    double _questionUploadProgress =
+        _question.videoUrl != null ? 1 : _mediaProgress[_question.id] ?? 0;
+    return GestureDetector(
+      onTap: () {
+        setState(() => selectedQuestionIndex = position);
+        if (!_question.isAnswered) {
+          postAnswer(context, position);
+        }
+      },
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6, top: 6),
+                      child: Icon(
+                        _question.isAnswered ? Icons.check_circle : Icons.add,
+                        color: Colors.greenAccent,
+                      ),
+                    ),
+                    CircularProgressIndicator(
+                      value: _questionUploadProgress,
+                      strokeWidth: 2,
+                      backgroundColor: Colors.transparent,
+                    )
+                  ],
+                ),
+              ),
+              Flexible(
+                child: text(context, _question.question, isLongText: true),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void postAnswer(BuildContext context, int position) async {
     XFile _file;
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) {
-          return CaptureScreen(
-            cameraEnabled: false,
-            onVideoCaptured: (XFile file) async {
-              _file = file;
-            },
-          );
-        },
+        builder: (_) => CaptureScreen(
+          cameraEnabled: false,
+          onVideoCaptured: (XFile file) => _file = file,
+        ),
       ),
     );
-    /* if (_file != null) {
-      final postRes = await _provider
-          .postAnswer(_file.path, selectedQuestionIndex, (count, total) {
-        print('count $count total $total');
-      });
-      if (postRes.success) {
-    _provider.updateQuestion(selectedQuestionIndex);
-      }
-    }*/
+    if (_file != null) {
+      String _questionId = _provider.questions[position].id;
+      _provider.postAnswer(
+        _file.path,
+        position,
+        (count, total) {
+          setState(() {
+            double progress = count / total;
+            if (_mediaProgress.containsKey(_questionId)) {
+              _mediaProgress[_questionId] = progress;
+            } else {
+              _mediaProgress.addAll({_questionId: progress});
+            }
+          });
+        },
+      );
+    }
   }
 }

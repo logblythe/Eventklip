@@ -7,7 +7,7 @@ import 'package:eventklip/utils/resources/colors.dart' as colors;
 class NoFolderWidget extends StatelessWidget {
   final String title;
   final String subtitle;
-  final Icon icon;
+  final IconData icon;
 
   const NoFolderWidget({Key key, this.title, this.subtitle, this.icon})
       : super(key: key);
@@ -22,7 +22,7 @@ class NoFolderWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon ?? Icons.folder),
+            Icon(icon ?? Icons.delete_outline_rounded),
             SizedBox(height: spacing_standard),
             text(context, title ?? 'No folders found',
                 fontSize: ts_extra_normal,

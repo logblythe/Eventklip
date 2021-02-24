@@ -4,8 +4,10 @@ class Question {
   String eventId;
   String createdById;
   String lastModifiedDate;
+  String videoUrl;
   int duration;
   bool isAnswered = false;
+
 
   Question({this.id,this.question, this.eventId, this.createdById, this.duration});
 

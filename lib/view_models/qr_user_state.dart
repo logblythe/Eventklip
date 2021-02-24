@@ -15,17 +15,15 @@ import 'package:video_player/video_player.dart';
 class QrUserState extends ChangeNotifier {
   FoldersApi _foldersApi = getIt.get<FoldersApi>();
   bool _loading = false;
-  List<Question> _questions=[];
+  List<Question> _questions = [];
 
   bool get loading => _loading;
 
   List<Question> get questions => _questions;
 
-  QrUserState() {
-    init();
-  }
+  int _selectedIndex;
 
-  void init() async {
+  QrUserState() {
     fetchQuestions();
   }
 
@@ -109,6 +107,7 @@ class QrUserState extends ChangeNotifier {
     int selectedQuestionIndex,
     ProgressCallback callback,
   ) async {
+    _selectedIndex = selectedQuestionIndex;
     String fileName = basename(filePath);
     File file = File(filePath);
     int fileSize = await file.length();
@@ -134,13 +133,16 @@ class QrUserState extends ChangeNotifier {
         "duration": videoDuration
       };
       createRes = await _foldersApi.createAnswerVideo(payload);
+      if (createRes.success) {
+        updateQuestion(uploadRes.fileUrl);
+      }
     }
     return createRes;
   }
 
-  void updateQuestion(int selectedQuestionIndex) {
-    questions[selectedQuestionIndex].isAnswered = true;
+  void updateQuestion(String videoUrl) {
+    questions[_selectedIndex].isAnswered = true;
+    questions[_selectedIndex].videoUrl = videoUrl;
     notifyListeners();
-
   }
 }
