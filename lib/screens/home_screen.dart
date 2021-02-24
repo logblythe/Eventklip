@@ -20,8 +20,8 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   var _selectedIndex = 0;
-  var homeFragment = HomeFragment();
-  var searchFragment = SearchFragment();
+  // var homeFragment = HomeFragment();
+  // var searchFragment = SearchFragment();
   var myFilesFragment = MyFilesFragment();
   var moreFragment = MoreFragment();
 
@@ -45,8 +45,8 @@ class HomeScreenState extends State<HomeScreen> {
           child: Scaffold(
               body: IndexedStack(
                 children: [
-                  HomeFragment(),
-                  SearchFragment(),
+                  // HomeFragment(),
+                  // SearchFragment(),
                   // MyFilesFragment(),
                   ParentFoldersFragment(),
                   MoreFragment(),
@@ -66,12 +66,12 @@ class HomeScreenState extends State<HomeScreen> {
                 child: AppBottomNavigationBar(
                   backgroundColor: Theme.of(context).splashColor,
                   items: const <AppBottomNavigationBarItem>[
-                    AppBottomNavigationBarItem(icon: ic_home),
-                    AppBottomNavigationBarItem(icon: ic_search),
+                    // AppBottomNavigationBarItem(icon: ic_home),
+                    // AppBottomNavigationBarItem(icon: ic_search),
                     // AppBottomNavigationBarItem(
                     //   icon: ic_folder,
                     // ),
-                    AppBottomNavigationBarItem(icon: ic_folder),
+                    AppBottomNavigationBarItem(icon: ic_home),
                     AppBottomNavigationBarItem(icon: ic_user),
                   ],
                   currentIndex: _selectedIndex,

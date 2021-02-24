@@ -1,11 +1,7 @@
-import 'package:eventklip/fragments/folder_fragment/sub_folder_fragment.dart';
 import 'package:eventklip/models/folder_model.dart';
 import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/resources/size.dart';
-import 'package:eventklip/view_models/folder_state.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import '../../../utils/app_widgets.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/resources/colors.dart';
@@ -47,10 +43,8 @@ class FolderWidget extends StatelessWidget {
                         fontSize: ts_extra_normal,
                         fontFamily: font_bold,
                         textColor: Colors.white),
-                    isListView
-                        ? MoreLessText(folderModel.description ??
+                    MoreLessText(folderModel.description ??
                             'This is a default folder description')
-                        : text(context, folderModel.name ?? "Default")
                   ],
                 ),
               )
@@ -60,10 +54,6 @@ class FolderWidget extends StatelessWidget {
       ),
     );
   }
-
-  handleQrClick(FolderModel folderModel) {}
-
-  handleBack(FolderModel folderModel) {}
 }
 
 class RowOrColumn extends StatelessWidget {

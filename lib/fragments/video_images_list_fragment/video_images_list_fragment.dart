@@ -108,6 +108,8 @@ class _GalleryFragmentState extends State<GalleryFragment> {
           body: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               // A grid view with 3 items per row
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
               crossAxisCount: 3,
             ),
             itemCount: medias.length,

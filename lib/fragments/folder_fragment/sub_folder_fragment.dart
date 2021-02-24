@@ -14,6 +14,7 @@ import 'package:eventklip/utils/resources/size.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:eventklip/utils/resources/colors.dart' as colors;
+import 'package:timeago/timeago.dart' as timeago;
 
 class FolderEventDetailFragment extends StatefulWidget {
   final FolderModel folder;
@@ -76,11 +77,16 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
                     clientMedias.isEmpty
                         ? emptyVideos()
                         : Expanded(
-                            child: ListView.builder(
+                            child: GridView.builder(
                               itemBuilder: (context, position) {
                                 return ClientMediaItem(clientMedias[position]);
                               },
                               itemCount: clientMedias.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                      mainAxisSpacing: 2,
+                                      childAspectRatio: 1,),
                             ),
                           )
                   ],
@@ -137,23 +143,19 @@ class ClientMediaItem extends StatelessWidget {
     print(clientMedia.fileLocation);
     return GestureDetector(
       onTap: () {
-        if (clientMedia.duration != "0")
-        {
+        if (clientMedia.duration != "0") {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => VideoViewScreen(
-                videoUrl: clientMedia.fileLocation,
-              )));
-        }else{
+                    videoUrl: clientMedia.fileLocation,
+                  )));
+        } else {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) {
-                  // If this is an image, navigate to ImageScreen
-                  return ImageScreen(imageUrl: clientMedia.fileLocation);
-                }
-            ),
+            MaterialPageRoute(builder: (_) {
+              // If this is an image, navigate to ImageScreen
+              return ImageScreen(imageUrl: clientMedia.fileLocation);
+            }),
           );
-
         }
       },
       child: Container(
@@ -185,7 +187,8 @@ class ClientMediaItem extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: text(context, clientMedia.title),
+              child: text(context,
+                  "Uploaded ${timeago.format(DateTime.parse(clientMedia.createdDate))}"),
             )
           ],
         ),

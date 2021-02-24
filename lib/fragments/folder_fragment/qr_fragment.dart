@@ -39,6 +39,14 @@ class _QrFragmentState extends State<QrFragment> {
   String _expiryDate = '';
   bool loading = false;
 
+  FolderModel folder;
+
+  @override
+  void initState() {
+    this.folder = widget.folder;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,9 +66,7 @@ class _QrFragmentState extends State<QrFragment> {
           key: formKey,
           child: Stack(
             children: [
-              widget.folder.qrLocation != null
-                  ? buildQr()
-                  : buildColumn(context),
+              folder.qrLocation != null ? buildQr() : buildColumn(context),
               loading
                   ? Loader()
                       .withSize(height: 40, width: 40)
@@ -159,7 +165,7 @@ class _QrFragmentState extends State<QrFragment> {
 
   Widget buildQr() {
     return Center(
-      child: CachedNetworkImage(imageUrl: widget.folder.qrLocation),
+      child: CachedNetworkImage(imageUrl: folder.qrLocation),
     );
   }
 
@@ -183,14 +189,21 @@ class _QrFragmentState extends State<QrFragment> {
           loading = true;
         });
         final response = await _foldersApi.createQr(CreateQRPayload(
-          eventId: widget.folder.id,
+          eventId: folder.id,
           noOfScans: int.parse(scansController.text),
           expiryDate: _expiryDate,
           noOfImgLimit: int.parse(imageLimitController.text),
           noOfVideoLimit: int.parse(videoLimitController.text),
           duration: int.parse(durationController.text),
         ).toJson());
-        if (response.success) {}
+        if (response.success) {
+          setState(() {
+            loading = false;
+            folder = response.folderModel;
+          });
+          Provider.of<FolderState>(context, listen: false).getFolders();
+          toast("Your QR code is generated");
+        }
       } catch (e) {
         setState(() {
           loading = false;
