@@ -26,6 +26,7 @@ dependencies:
   image_picker_gallery_camera:
   flutter_slidable:
   video_player: 1.0.1
+  image_downloader: ^0.20.1
   cached_video_player:
     git:
       url: https://github.com/Suman085/flutter_cached_video_player.git

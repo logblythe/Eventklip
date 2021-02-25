@@ -6,6 +6,8 @@ import 'package:eventklip/screens/qr_users_home_screen.dart';
 import 'package:eventklip/screens/shared_preferences.dart';
 import 'package:eventklip/services/authentication_service.dart';
 import 'package:eventklip/utils/constants.dart';
+import 'package:eventklip/utils/resources/colors.dart';
+import 'package:eventklip/view_models/app_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +16,8 @@ import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/resources/size.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:eventklip/utils/widget_extensions.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
   static String tag = '/SignUpScreen';
@@ -57,7 +61,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                getForm().paddingTop(100),
+                Card(
+                  child: Container(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.all(spacing_standard_new),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                                text: "Event: ",
+                                children: [
+                                  TextSpan(
+                                      text: widget.authDetails.eventName,
+                                      style: TextStyle(
+                                          color: textColorPrimary,
+                                          fontFamily: font_regular,
+                                          fontSize: ts_medium,
+                                          letterSpacing: 0.1))
+                                ],
+                                style: TextStyle(
+                                    color: Colors.blue,
+                                    fontFamily: font_regular,
+                                    fontSize: ts_medium,
+                                    letterSpacing: 0.1)),
+                          ),
+                          4.height,
+                          text(context, widget.authDetails.eventDesc),
+                        ],
+                      ),
+                    ),
+                  ),
+                ).paddingAll(spacing_standard_new),
+                getForm(),
                 SizedBox(
                   width: double.infinity,
                   child: button(
@@ -83,13 +120,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   password: password,
                                   fullname: name));
                           if (response.success) {
+                            final profile = UserProfile(
+                                userName: response.returnJSONObj.value.userName,
+                                fullname: response.returnJSONObj.value.fullName,
+                                eventId: widget.authDetails.eventId,
+                                adminId: widget.authDetails.adminId);
                             await SharedPreferenceHelper.setUserProfile(
-                                UserProfile(
-                                    userName:
-                                        response.returnJSONObj.value.userName,
-                                    fullname: response.returnJSONObj.value.fullName,
-                                    eventId: widget.authDetails.eventId,
-                                    adminId: widget.authDetails.adminId));
+                                profile);
+                            Provider.of<EventklipAppState>(context,
+                                    listen: false)
+                                .setUserProfile(profile);
                             await SharedPreferenceHelper.saveToken(
                                 response.returnJSONObj.value.accessToken);
                             await SharedPreferenceHelper.setIsLoggedIn();
@@ -163,12 +203,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ).paddingBottom(spacing_standard_new),
           formField(
             context,
-            "hint_email",
+            "hint_email_opt",
             focusNode: _emailFocusNode,
             nextFocus: _passwordFocusNode,
-            validator: (value) {
-              return value.validateEMail(context);
-            },
             onSaved: (String value) {
               userEmail = value;
             },

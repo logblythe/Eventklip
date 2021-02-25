@@ -52,6 +52,7 @@ class _QuestionAnswerSetupScreenState extends State<QuestionAnswerSetupScreen> {
                     ? Loader()
                     : questions.isEmpty
                         ? NoFolderWidget(
+                            icon: Icons.hourglass_empty_outlined,
                             title:
                                 'No questions associated with ${widget.folder.name}',
                             subtitle:

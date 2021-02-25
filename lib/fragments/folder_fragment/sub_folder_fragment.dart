@@ -10,6 +10,7 @@ import 'package:eventklip/screens/eventklip_admin_video_view.dart';
 import 'package:eventklip/screens/eventklip_movie_detail_screen.dart';
 import 'package:eventklip/screens/question_answer_setup_screen.dart';
 import 'package:eventklip/utils/app_widgets.dart';
+import 'package:eventklip/utils/constants.dart';
 import 'package:eventklip/utils/resources/size.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -47,24 +48,10 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
-            InkWell(
-                child: Icon(Icons.qr_code),
-                onTap: () {
-                  if (widget.folder.qrLocation == null) {}
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => QrFragment(
-                            folder: widget.folder,
-                          )));
-                }).paddingRight(12),
-            InkWell(
-                child: Icon(Icons.question_answer),
-                onTap: () {
-                  if (widget.folder.qrLocation == null) {}
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => QuestionAnswerSetupScreen(
-                            folder: widget.folder,
-                          )));
-                }).paddingRight(12),
+            InkWell(child: Icon(Icons.qr_code), onTap: gotoQrScreen)
+                .paddingRight(12),
+            InkWell(child: Icon(Icons.question_answer), onTap: gotoQnAScreen)
+                .paddingRight(12),
           ],
         ),
         body: loading
@@ -84,9 +71,10 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
                               itemCount: clientMedias.length,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                      mainAxisSpacing: 2,
-                                      childAspectRatio: 1,),
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 2,
+                                childAspectRatio: 1,
+                              ),
                             ),
                           )
                   ],
@@ -99,10 +87,67 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        NoFolderWidget(
-          title: 'No records found for ${widget.folder.name}',
-          subtitle:
-              'Images and videos will be available once users upload to this event.',
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(spacing_standard_new),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                NoFolderWidget(
+                  icon: Icons.image,
+                  subtitle:
+                      'Images and videos will be available once users upload to this event.',
+                  title: "No records found for ${widget.folder.name}",
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: OutlineButton(
+                        onPressed: gotoQrScreen,
+                        borderSide: BorderSide(
+                          color: Colors.white, //Color of the border
+                          style: BorderStyle.solid, //Style of the border
+                          width: 1, //width of the border
+                        ),
+                        highlightedBorderColor: Colors.blue,
+                        child: text(
+                          context,
+                          widget.folder.qrLocation == null
+                              ? "Setup QR"
+                              : "View Event QR",
+                          textColor: Colors.lightBlue,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 10,
+                      width: 2,
+                      color: Colors.blue,
+                    ).paddingSymmetric(horizontal: spacing_standard_new),
+                    Expanded(
+                      child: OutlineButton(
+                        onPressed: gotoQnAScreen,
+                        borderSide: BorderSide(
+                          color: Colors.white, //Color of the border
+                          style: BorderStyle.solid, //Style of the border
+                          width: 1, //width of the border
+                        ),
+                        highlightedBorderColor: Colors.blue,
+                        child: text(
+                          context,
+                          "Setup Questions",
+                          textColor: Colors.lightBlue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ).paddingTop(spacing_standard_new)
+              ],
+            ),
+          ),
         )
       ],
     );
@@ -130,6 +175,20 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
       toast("Something went wrong");
     }
     return true;
+  }
+
+  void gotoQrScreen() {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => QrFragment(
+              folder: widget.folder,
+            )));
+  }
+
+  void gotoQnAScreen() {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => QuestionAnswerSetupScreen(
+              folder: widget.folder,
+            )));
   }
 }
 

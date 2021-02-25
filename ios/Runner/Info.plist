@@ -52,6 +52,8 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera for scanning barcode and clicking images and videos</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>To save qr code image in the external storage</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

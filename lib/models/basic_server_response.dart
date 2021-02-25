@@ -1,4 +1,3 @@
-
 class BasicServerResponse {
   bool success;
   String returnMsg;
@@ -52,6 +51,8 @@ class ReturnObject {
   int duration;
   String eventId;
   String adminId;
+  String eventName;
+  String eventDesc;
 
   ReturnObject({this.duration, this.eventId, this.adminId});
 
@@ -59,6 +60,8 @@ class ReturnObject {
     duration = json['duration'];
     eventId = json['eventId'];
     adminId = json['adminId'];
+    eventDesc = json['eventDesc'];
+    eventName = json['eventName'];
   }
 
   Map<String, dynamic> toJson() {
@@ -66,7 +69,8 @@ class ReturnObject {
     data['duration'] = this.duration;
     data['eventId'] = this.eventId;
     data['adminId'] = this.adminId;
+    data['eventName'] = this.eventName;
+    data['eventDesc'] = this.eventDesc;
     return data;
   }
 }
-

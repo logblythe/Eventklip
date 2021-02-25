@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
               locale: provider.locale,
               themeMode:
                   provider.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-              home: QrUsersHomeScreen(),
+              home: SplashScreen(),
               routes: <String, WidgetBuilder>{
                 OnBoardingScreen.tag: (BuildContext context) =>
                     OnBoardingScreen(),

@@ -4,6 +4,7 @@
   "register": "Register",
   "sign_up": "Sign Up",
   "hint_email": "Email",
+  "hint_email_opt": "Email (Optional)",
   "hint_name": "Name",
   "hint_description": "Description",
   "hint_no_of_scans": "Number of people attending",

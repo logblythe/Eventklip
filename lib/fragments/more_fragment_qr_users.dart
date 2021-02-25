@@ -62,7 +62,7 @@ class MoreFragmentQrUsersState extends State<MoreFragmentQrUsers> {
                     elevation: spacing_standard_new,
                     margin: EdgeInsets.all(0),
                     child: UserAvatarWithInitials(
-                      provider.userProfile.fullname ?? "??",
+                      provider.userProfile?.fullname ?? "??",
                       size: 60,
                     ),
                   ).paddingRight(spacing_standard_new),
@@ -70,12 +70,12 @@ class MoreFragmentQrUsersState extends State<MoreFragmentQrUsers> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        text(context, provider.userProfile.fullname ?? "-",
+                        text(context, provider.userProfile?.fullname ?? "-",
                             fontSize: ts_extra_normal,
                             fontFamily: font_bold,
                             textColor:
                                 Theme.of(context).textTheme.headline6.color),
-                        text(context, provider.userProfile.userName,
+                        text(context, provider.userProfile?.userName ?? "",
                             fontSize: ts_normal,
                             fontFamily: font_medium,
                             textColor:

@@ -7,6 +7,7 @@ import 'package:eventklip/view_models/folder_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cupertino_date_picker_fork/flutter_cupertino_date_picker_fork.dart';
+import 'package:image_downloader/image_downloader.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:eventklip/utils/app_widgets.dart';
@@ -53,6 +54,12 @@ class _QrFragmentState extends State<QrFragment> {
       appBar: appBarLayout(
         context,
         "",
+        actions: [
+          folder.qrLocation != null
+              ? IconButton(
+                  icon: Icon(Icons.download_rounded), onPressed: _downloadQr)
+              : Container()
+        ],
         leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
@@ -176,7 +183,7 @@ class _QrFragmentState extends State<QrFragment> {
       onConfirm: (date, _) {
         _expiryDate =
             DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(date.toUtc());
-        dateController.text = date.toLocal().toString().substring(0, 10);
+        dateController.text = DateFormat('MM-dd-yyyy').format(date.toLocal());
       },
     );
   }
@@ -209,6 +216,27 @@ class _QrFragmentState extends State<QrFragment> {
           loading = false;
         });
       }
+    }
+  }
+
+  void _downloadQr() async {
+    try {
+      // Saved with this method.
+      var imageId =
+          await ImageDownloader.downloadImage(widget.folder.qrLocation);
+      print(imageId);
+      if (imageId == null) {
+        return;
+      }
+
+      // Below is a method of obtaining saved image information.
+      var fileName = await ImageDownloader.findName(imageId);
+      var path = await ImageDownloader.findPath(imageId);
+      var size = await ImageDownloader.findByteSize(imageId);
+      var mimeType = await ImageDownloader.findMimeType(imageId);
+      toast("Saved as $fileName in $path}",textColor: Colors.white,length:Toast.LENGTH_LONG );
+    } on PlatformException catch (error) {
+      print(error);
     }
   }
 }

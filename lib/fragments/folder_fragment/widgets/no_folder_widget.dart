@@ -22,10 +22,15 @@ class NoFolderWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon ?? Icons.delete_outline_rounded),
+            Icon(
+              icon ?? Icons.delete_outline_rounded,
+              size: 44,
+            ),
             SizedBox(height: spacing_standard),
             text(context, title ?? 'No folders found',
                 fontSize: ts_extra_normal,
+                maxLine: 2,
+                isCentered: true,
                 fontFamily: font_bold,
                 textColor: colors.textColorPrimary),
             Flexible(
