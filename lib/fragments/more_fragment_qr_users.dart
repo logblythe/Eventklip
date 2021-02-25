@@ -1,4 +1,3 @@
-import 'package:eventklip/screens/privacy_policy_screen.dart';
 import 'package:eventklip/screens/shared_preferences.dart';
 import 'package:eventklip/screens/signin.dart';
 import 'package:eventklip/ui/widgets/user_avatar_widget.dart';
@@ -6,8 +5,6 @@ import 'package:eventklip/view_models/app_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:eventklip/screens/account_settings_screen.dart';
-import 'package:eventklip/screens/edit_profile_screen.dart';
-import 'package:eventklip/screens/terms_conditions_screen.dart';
 import 'package:eventklip/utils/app_localizations.dart';
 import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/constants.dart';

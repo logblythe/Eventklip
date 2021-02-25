@@ -106,6 +106,8 @@ class _CaptureScreenState extends State<CaptureScreen>
     WidgetsBinding.instance.removeObserver(this);
     _flashModeControlRowAnimationController.dispose();
     _exposureModeControlRowAnimationController.dispose();
+    controller?.dispose();
+    videoController?.dispose();
     super.dispose();
   }
 
@@ -117,6 +119,7 @@ class _CaptureScreenState extends State<CaptureScreen>
     }
     if (state == AppLifecycleState.inactive) {
       controller?.dispose();
+      videoController?.dispose();
     } else if (state == AppLifecycleState.resumed) {
       if (controller != null) {
         onNewCameraSelected(controller.description);

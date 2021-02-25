@@ -4,7 +4,7 @@ class Question {
   String eventId;
   String createdById;
   String lastModifiedDate;
-  String videoUrl;
+  String answerUrl;
   int duration;
   bool isAnswered = false;
 
@@ -18,6 +18,7 @@ class Question {
     createdById = json['createdById'];
     lastModifiedDate = json['lastModifiedDate'];
     duration = json['duration'];
+    answerUrl = json['answerURL'];
   }
 
   Map<String, dynamic> toJson() {
@@ -28,6 +29,7 @@ class Question {
     data['createdById'] = this.createdById;
     data['lastModifiedDate'] = this.lastModifiedDate;
     data['duration'] = this.duration;
+    data['answerURL'] = this.answerUrl;
     return data;
   }
 }

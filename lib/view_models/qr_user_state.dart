@@ -90,9 +90,7 @@ class QrUserState extends ChangeNotifier {
     _loading = true;
     notifyListeners();
     try {
-      _questions = await _foldersApi
-          .getQuestionsForEventId("63a4e04f-8815-41e9-87f8-b8753990ff31");
-      // _questions = await _foldersApi.getQuestionsForEventId(user.id);
+      _questions = await _foldersApi.getQuestionsForEventId(user.eventId);
       _questions.sort((a, b) {
         return b.lastModifiedDate.compareTo(a.lastModifiedDate);
       });
@@ -141,8 +139,7 @@ class QrUserState extends ChangeNotifier {
   }
 
   void updateQuestion(String videoUrl) {
-    questions[_selectedIndex].isAnswered = true;
-    questions[_selectedIndex].videoUrl = videoUrl;
+    questions[_selectedIndex].answerUrl = videoUrl;
     notifyListeners();
   }
 }

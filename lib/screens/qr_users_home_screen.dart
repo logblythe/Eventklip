@@ -1,11 +1,9 @@
 import 'package:eventklip/fragments/more_fragment_qr_users.dart';
 import 'package:eventklip/fragments/question_answer_fragment.dart';
 import 'package:eventklip/fragments/video_images_list_fragment/video_images_list_fragment.dart';
-import 'package:eventklip/view_models/home_app_state.dart';
 import 'package:eventklip/view_models/qr_user_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:eventklip/fragments/more_fragment.dart';
 import 'package:eventklip/fragments/my_files_fragment.dart';
 import 'package:eventklip/utils/bottom_navigation.dart';
 import 'package:eventklip/utils/resources/images.dart';

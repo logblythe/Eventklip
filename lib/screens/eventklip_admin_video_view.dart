@@ -1,12 +1,10 @@
 import 'package:eventklip/models/homemovie_model.dart';
 import 'package:eventklip/ui/parts/eventklip_video_player.dart';
-import 'package:eventklip/view_models/video_detail_state.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/countdown_controller.dart';
-import 'package:provider/provider.dart';
 
 class VideoViewScreen extends StatefulWidget {
   static final String tag = '/VideoViewScreen';

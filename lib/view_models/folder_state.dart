@@ -1,17 +1,11 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:eventklip/api/folders_api.dart';
 import 'package:eventklip/di/injection.dart';
 import 'package:eventklip/models/create_folder_model.dart';
 import 'package:eventklip/models/create_qr_model.dart';
-import 'package:eventklip/models/file_upload_model.dart';
 import 'package:eventklip/models/folder_model.dart';
 import 'package:flutter/material.dart';
-import 'package:mime/mime.dart';
-import 'package:path/path.dart';
-import 'package:video_player/video_player.dart';
 
 class FolderState with ChangeNotifier {
   FoldersApi _foldersApi = getIt.get<FoldersApi>();
@@ -26,7 +20,6 @@ class FolderState with ChangeNotifier {
       StreamController.broadcast();
 
   bool get loading => _loading;
-
 
   bool get qrExists => false;
 
@@ -104,7 +97,6 @@ class FolderState with ChangeNotifier {
       notifyListeners();
     }
   }
-
 
   void selectFolder(FolderModel folderModel) {
     _selectedFolder = folderModel;

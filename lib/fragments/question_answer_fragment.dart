@@ -71,12 +71,13 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
 
   Column buildBody() {
     Question _question = _questions[selectedQuestionIndex];
+    bool _answered = _question.answerUrl != null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _question.videoUrl != null
+        _answered
             ? EventklipVideoPlayer(
-                videoUrl: _question.videoUrl,
+                videoUrl: _question.answerUrl,
                 videoTitle: _question.question,
                 disableNavigations: true,
                 onVideoEnd: () {
@@ -118,12 +119,13 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
 
   GestureDetector buildQuestionWidget(int position, BuildContext context) {
     Question _question = _questions[position];
+    bool _answered = _question.answerUrl != null;
     double _questionUploadProgress =
-        _question.videoUrl != null ? 1 : _mediaProgress[_question.id] ?? 0;
+        _answered ? 1 : _mediaProgress[_question.id] ?? 0;
     return GestureDetector(
       onTap: () {
         setState(() => selectedQuestionIndex = position);
-        if (!_question.isAnswered) {
+        if (!_answered) {
           postAnswer(context, position);
         }
       },
@@ -139,7 +141,7 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
                     Padding(
                       padding: const EdgeInsets.only(left: 6, top: 6),
                       child: Icon(
-                        _question.isAnswered ? Icons.check_circle : Icons.add,
+                        _answered ? Icons.check_circle : Icons.add,
                         color: Colors.greenAccent,
                       ),
                     ),

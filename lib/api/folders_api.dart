@@ -9,12 +9,10 @@ import 'package:eventklip/models/client_media.dart';
 import 'package:eventklip/models/create_folder_model.dart';
 import 'package:eventklip/models/create_qr_model.dart';
 import 'package:eventklip/models/file_upload_model.dart';
-import 'package:eventklip/models/file_upload_model.dart';
 import 'package:eventklip/models/folder_model.dart';
 import 'package:dio/dio.dart';
 import 'package:eventklip/models/question.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mime/mime.dart';
 
 abstract class IFolders {
   Future getFolders();

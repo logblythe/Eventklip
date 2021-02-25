@@ -4,11 +4,9 @@ import 'package:eventklip/models/basic_server_response.dart';
 import 'package:eventklip/screens/sign_up_screen.dart';
 import 'package:eventklip/services/authentication_service.dart';
 import 'package:eventklip/ui/widgets/animated_scanner.dart';
-import 'package:eventklip/view_models/app_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRScanner extends StatefulWidget {
