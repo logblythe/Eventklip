@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:eventklip/main.dart';
+import 'package:eventklip/utils/resources/size.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:video_player/video_player.dart';
-
 
 class CaptureScreen extends StatefulWidget {
   final cameraEnabled;
@@ -66,6 +67,10 @@ class _CaptureScreenState extends State<CaptureScreen>
 
   // Counting pointers (number of user fingers on screen)
   int _pointers = 0;
+
+  var _waitingConfirmation = false;
+
+  XFile tempFile;
 
   @override
   void initState() {
@@ -151,7 +156,9 @@ class _CaptureScreenState extends State<CaptureScreen>
                       child: Padding(
                         padding: const EdgeInsets.all(1.0),
                         child: Center(
-                          child: _cameraPreviewWidget(),
+                          child: _waitingConfirmation
+                              ? _imagePreviewWidget()
+                              : _cameraPreviewWidget(),
                         ),
                       ),
                       decoration: BoxDecoration(
@@ -167,7 +174,42 @@ class _CaptureScreenState extends State<CaptureScreen>
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 40.0),
-                      child: _captureControlRowWidget(),
+                      child: _waitingConfirmation
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                FloatingActionButton(
+                                  heroTag: "hero hero",
+                                  child: Icon(Icons.check),
+                                  onPressed: () {
+                                    setState(() {
+                                      _waitingConfirmation = false;
+                                      videoController = null;
+                                      imageFile = tempFile;
+                                      videoController?.dispose();
+                                    });
+                                    widget.onImageCaptured(tempFile);
+                                    tempFile = null;
+                                  },
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      right: spacing_standard_new),
+                                ),
+                                FloatingActionButton(
+                                  heroTag: "hero hero",
+                                  child: Icon(Icons.close),
+                                  onPressed: () {
+                                    setState(() {
+                                      _waitingConfirmation = false;
+                                      tempFile = null;
+                                    });
+                                  },
+                                ),
+                              ],
+                            )
+                          : _captureControlRowWidget(),
                     ),
                   ],
                 ),
@@ -268,10 +310,9 @@ class _CaptureScreenState extends State<CaptureScreen>
                       : Container(
                           child: Center(
                             child: AspectRatio(
-                                aspectRatio:
-                                    videoController.value.size != null
-                                        ? videoController.value.aspectRatio
-                                        : 1.0,
+                                aspectRatio: videoController.value.size != null
+                                    ? videoController.value.aspectRatio
+                                    : 1.0,
                                 child: VideoPlayer(videoController)),
                           ),
                           decoration: BoxDecoration(
@@ -633,13 +674,14 @@ class _CaptureScreenState extends State<CaptureScreen>
   void onTakePictureButtonPressed() {
     takePicture().then((XFile file) async {
       if (mounted) {
-        setState(() {
-          videoController = null;
-          imageFile = file;
-          videoController?.dispose();
-        });
-
-        widget.onImageCaptured(file);
+        if (file != null) {
+          setState(() {
+            tempFile = file;
+            _waitingConfirmation = true;
+          });
+        } else {
+          toast("Image capture failure.");
+        }
       }
     });
   }
@@ -904,5 +946,13 @@ class _CaptureScreenState extends State<CaptureScreen>
       );
     }
     return Container();
+  }
+
+  _imagePreviewWidget() {
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      child: Image.file(File(tempFile.path)),
+    );
   }
 }
