@@ -90,6 +90,7 @@ class _QuestionAnswerSetupScreenState extends State<QuestionAnswerSetupScreen> {
         loading = true;
       });
       final _questions = await _foldersApi.getQuestionsForEventId(id);
+      print(_questions);
       _questions.sort((a, b) {
         return b.lastModifiedDate.compareTo(a.lastModifiedDate);
       });
