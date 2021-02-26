@@ -46,7 +46,6 @@ class _AssetThumbnailState extends State<AssetThumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    // We're using a FutureBuilder since thumbData is a future
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -72,14 +71,8 @@ class _AssetThumbnailState extends State<AssetThumbnail> {
             // Wrap the image in a Positioned.fill to fill the space
             Positioned.fill(
               child: widget.asset.mediaType == MediaTypeImage
-                  ? Image.file(
-                      File(widget.asset.path),
-                      fit: BoxFit.fitWidth,
-                    )
-                  : Image.memory(
-                      widget.thumb,
-                      fit: BoxFit.fitWidth,
-                    ),
+                  ? Image.file(File(widget.asset.path), fit: BoxFit.fitWidth)
+                  : Image.memory(widget.thumb, fit: BoxFit.fitWidth),
             ),
             // Display a Play icon if the asset is a video
             if (widget.asset.mediaType == MediaTypeVideo)
@@ -87,7 +80,7 @@ class _AssetThumbnailState extends State<AssetThumbnail> {
                 child: Icon(
                   Icons.play_circle_fill,
                   size: 42,
-                  color: Colors.white,
+                  color: Colors.white
                 ),
               ),
           ],

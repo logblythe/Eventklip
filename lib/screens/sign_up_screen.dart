@@ -15,8 +15,6 @@ import 'package:eventklip/utils/app_localizations.dart';
 import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/resources/size.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:eventklip/utils/widget_extensions.dart';
-import 'package:provider/provider.dart';
 import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {

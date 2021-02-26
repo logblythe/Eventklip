@@ -1,11 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:eventklip/fragments/folder_fragment/widgets/no_folder_widget.dart';
 import 'package:eventklip/models/question.dart';
-import 'package:eventklip/models/user_profile.dart';
 import 'package:eventklip/screens/capture_screen.dart';
-import 'package:eventklip/screens/shared_preferences.dart';
 import 'package:eventklip/ui/parts/eventklip_video_player.dart';
-import 'package:eventklip/ui/widgets/upload_indicator_widget.dart';
 import 'package:eventklip/utils/app_widgets.dart';
 import 'package:eventklip/utils/resources/colors.dart';
 import 'package:eventklip/utils/resources/size.dart';

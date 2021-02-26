@@ -11,7 +11,6 @@ import 'package:eventklip/ui/widgets/asset_thumbnail.dart';
 import 'package:eventklip/ui/widgets/context_menu.dart';
 import 'package:eventklip/utils/utility.dart';
 import 'package:eventklip/view_models/qr_user_state.dart';
-import 'package:eventklip/view_models/qr_user_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';

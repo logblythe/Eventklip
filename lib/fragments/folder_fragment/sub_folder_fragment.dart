@@ -7,10 +7,8 @@ import 'package:eventklip/fragments/video_images_list_fragment/video_images_list
 import 'package:eventklip/models/client_media.dart';
 import 'package:eventklip/models/folder_model.dart';
 import 'package:eventklip/screens/eventklip_admin_video_view.dart';
-import 'package:eventklip/screens/eventklip_movie_detail_screen.dart';
 import 'package:eventklip/screens/question_answer_setup_screen.dart';
 import 'package:eventklip/utils/app_widgets.dart';
-import 'package:eventklip/utils/constants.dart';
 import 'package:eventklip/utils/resources/size.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
