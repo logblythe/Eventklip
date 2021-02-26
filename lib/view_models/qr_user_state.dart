@@ -8,7 +8,6 @@ import 'package:eventklip/models/question.dart';
 import 'package:eventklip/screens/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:path/path.dart';
 import 'package:video_player/video_player.dart';
 

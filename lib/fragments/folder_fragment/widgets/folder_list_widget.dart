@@ -1,7 +1,6 @@
 import 'package:eventklip/fragments/folder_fragment/widgets/folder_widget.dart';
 import 'package:eventklip/models/folder_model.dart';
 import 'package:flutter/material.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 class FolderListWidget extends StatelessWidget {
   final List<FolderModel> folders;

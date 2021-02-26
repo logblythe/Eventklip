@@ -2,8 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:mime/mime.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 Duration convertTimeSpanToDuration(String timespan) {

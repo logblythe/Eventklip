@@ -3,7 +3,6 @@ import 'package:eventklip/di/injection.dart';
 import 'package:eventklip/screens/capture_screen.dart';
 import 'package:eventklip/screens/privacy_policy_screen.dart';
 import 'package:eventklip/screens/qr_users_home_screen.dart';
-import 'package:eventklip/screens/qr_users_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';

@@ -5,12 +5,10 @@ import 'package:eventklip/utils/constants.dart';
 import 'package:eventklip/utils/duration_formatter.dart';
 import 'package:eventklip/utils/resources/colors.dart';
 import 'package:eventklip/utils/resources/size.dart';
-import 'package:eventklip/view_models/video_detail_state.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/countdown_controller.dart';
-import 'package:provider/provider.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:screen/screen.dart';
 
