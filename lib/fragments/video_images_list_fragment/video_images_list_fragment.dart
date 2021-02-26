@@ -12,6 +12,7 @@ import 'package:eventklip/ui/widgets/upload_indicator_widget.dart';
 import 'package:eventklip/utils/utility.dart';
 import 'package:eventklip/view_models/qr_user_state.dart';
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
@@ -20,11 +21,13 @@ class GalleryFragment extends StatefulWidget {
   _GalleryFragmentState createState() => _GalleryFragmentState();
 }
 
-class _GalleryFragmentState extends State<GalleryFragment> {
+class _GalleryFragmentState extends State<GalleryFragment>
+    with AutomaticKeepAliveClientMixin {
   // This will hold all the assets we fetched
   List<Media> medias = [];
   Map<int, double> _mediaProgress = {};
   Map<int, Uint8List> _mediaThumb = {};
+  bool _loading = false;
 
   QrUserState _provider;
 
@@ -36,6 +39,7 @@ class _GalleryFragmentState extends State<GalleryFragment> {
   }
 
   _fetchAssets() async {
+    setState(() => _loading = true);
     final user = await SharedPreferenceHelper.getUser();
     final medias = await Media().select().eventId.equals(user.eventId).toList();
     medias.sort((a, b) {
@@ -51,11 +55,13 @@ class _GalleryFragmentState extends State<GalleryFragment> {
     }
     setState(() {
       this.medias = medias;
+      _loading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<QrUserState>(
       builder: (context, model, child) {
         _provider = model;
@@ -117,31 +123,42 @@ class _GalleryFragmentState extends State<GalleryFragment> {
                   child: Container())
             ],
           ),
-          body: medias.isEmpty
-              ? NoFolderWidget(
-                  title: 'No media found',
-                  subtitle:
-                      'Images/Videos will be visible once you start uploading',
-                )
-              : GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    // A grid view with 3 items per row
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                    crossAxisCount: 3,
-                  ),
-                  itemCount: medias.length,
-                  itemBuilder: (_, index) {
-                    return UploadIndicatorWidget(
-                      progress: _mediaProgress[medias[index].id] ?? 0,
-                      uploaded: medias[index].isUploaded,
-                      child: AssetThumbnail(
-                        asset: medias[index],
-                        thumb: _mediaThumb[medias[index].id],
+          body: RefreshIndicator(
+            onRefresh: () => _fetchAssets(),
+            child: Stack(
+              children: [
+                medias.isEmpty
+                    ? NoFolderWidget(
+                        title: 'No media found',
+                        subtitle:
+                            'Images/Videos will be visible once you start uploading',
+                      )
+                    : GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          // A grid view with 3 items per row
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          crossAxisCount: 3,
+                        ),
+                        itemCount: medias.length,
+                        itemBuilder: (_, index) {
+                          return UploadIndicatorWidget(
+                            progress: _mediaProgress[medias[index].id] ?? 0,
+                            uploaded: medias[index].isUploaded,
+                            child: AssetThumbnail(
+                              asset: medias[index],
+                              thumb: _mediaThumb[medias[index].id],
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
+                Loader()
+                    .withSize(height: 40, width: 40)
+                    .center()
+                    .visible(_provider.loading)
+              ],
+            ),
+          ),
         );
       },
     );
@@ -196,6 +213,9 @@ class _GalleryFragmentState extends State<GalleryFragment> {
       }
     });
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class AssetThumbnail extends StatelessWidget {

@@ -4,7 +4,6 @@ import 'package:eventklip/fragments/video_images_list_fragment/video_images_list
 import 'package:eventklip/view_models/qr_user_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:eventklip/fragments/my_files_fragment.dart';
 import 'package:eventklip/utils/bottom_navigation.dart';
 import 'package:eventklip/utils/resources/images.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +17,8 @@ class QrUsersHomeScreen extends StatefulWidget {
 
 class QrUsersHomeScreenState extends State<QrUsersHomeScreen> {
   var _selectedIndex = 0;
-  var myFilesFragment = MyFilesFragment();
+
+  var _controller = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +33,14 @@ class QrUsersHomeScreenState extends State<QrUsersHomeScreen> {
           return false;
         },
         child: Scaffold(
-          body: Center(
-            child: _selectedIndex == 0
-                ? GalleryFragment()
-                : _selectedIndex == 1
-                    ? QuestionAnswerFragment()
-                    : MoreFragmentQrUsers(),
+          body: PageView(
+            physics: NeverScrollableScrollPhysics(),
+            controller: _controller,
+            children: [
+              GalleryFragment(),
+              QuestionAnswerFragment(),
+              MoreFragmentQrUsers(),
+            ],
           ),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
@@ -64,9 +66,8 @@ class QrUsersHomeScreenState extends State<QrUsersHomeScreen> {
               selectedIconTheme: IconThemeData(
                   color: Theme.of(context).primaryColor, size: 22),
               onTap: (index) async {
-                setState(() {
-                  _selectedIndex = index;
-                });
+                _controller.jumpToPage(index);
+                setState(() => _selectedIndex = index);
               },
               type: AppBottomNavigationBarType.fixed,
             ),

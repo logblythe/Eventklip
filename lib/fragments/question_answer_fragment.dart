@@ -25,7 +25,8 @@ class QuestionAnswerFragment extends StatefulWidget {
   _QuestionAnswerFragmentState createState() => _QuestionAnswerFragmentState();
 }
 
-class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
+class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment>
+    with AutomaticKeepAliveClientMixin {
   var selectedQuestionIndex = 0;
   QrUserState _provider;
   List<Question> _questions;
@@ -33,6 +34,7 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: appBarWidget(
         'Questions',
@@ -44,21 +46,24 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
         builder: (context, state, child) {
           _provider = state;
           _questions = _provider.questions;
-          return Padding(
-            padding: const EdgeInsets.all(spacing_standard_new),
-            child: Stack(
-              children: [
-                _questions.isNotEmpty
-                    ? buildBody()
-                    : NoFolderWidget(
-                        title: "No questions found",
-                        subtitle: "",
-                      ),
-                Loader()
-                    .withSize(height: 40, width: 40)
-                    .center()
-                    .visible(_provider.loading)
-              ],
+          return RefreshIndicator(
+            onRefresh: ()=>_provider.fetchQuestions(),
+            child: Padding(
+              padding: const EdgeInsets.all(spacing_standard_new),
+              child: Stack(
+                children: [
+                  _questions.isNotEmpty
+                      ? buildBody()
+                      : NoFolderWidget(
+                          title: "No questions found",
+                          subtitle: "",
+                        ),
+                  Loader()
+                      .withSize(height: 40, width: 40)
+                      .center()
+                      .visible(_provider.loading)
+                ],
+              ),
             ),
           );
         },
@@ -188,4 +193,7 @@ class _QuestionAnswerFragmentState extends State<QuestionAnswerFragment> {
       );
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

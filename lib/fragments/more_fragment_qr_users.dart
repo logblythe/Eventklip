@@ -22,7 +22,8 @@ class MoreFragmentQrUsers extends StatefulWidget {
   MoreFragmentQrUsersState createState() => MoreFragmentQrUsersState();
 }
 
-class MoreFragmentQrUsersState extends State<MoreFragmentQrUsers> {
+class MoreFragmentQrUsersState extends State<MoreFragmentQrUsers>
+    with AutomaticKeepAliveClientMixin {
   var profileImage = "";
   var userName = "";
   var userEmail = "";
@@ -36,6 +37,7 @@ class MoreFragmentQrUsersState extends State<MoreFragmentQrUsers> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<EventklipAppState>(builder: (context, provider, child) {
       return Scaffold(
         appBar: PreferredSize(
@@ -170,4 +172,7 @@ class MoreFragmentQrUsersState extends State<MoreFragmentQrUsers> {
       userEmail = "vicotriabecks@gmail.com";
     });
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
