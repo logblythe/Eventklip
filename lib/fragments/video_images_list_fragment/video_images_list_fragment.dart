@@ -117,32 +117,31 @@ class _GalleryFragmentState extends State<GalleryFragment> {
                   child: Container())
             ],
           ),
-          body:
-          medias.isEmpty
+          body: medias.isEmpty
               ? NoFolderWidget(
-            title: 'No media found',
-            subtitle:
-            'Images/Videos will be visible once you start uploading',
-          )
+                  title: 'No media found',
+                  subtitle:
+                      'Images/Videos will be visible once you start uploading',
+                )
               : GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              // A grid view with 3 items per row
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              crossAxisCount: 3,
-            ),
-            itemCount: medias.length,
-            itemBuilder: (_, index) {
-              return UploadIndicatorWidget(
-                progress: _mediaProgress[medias[index].id] ?? 0,
-                uploaded: medias[index].isUploaded,
-                child: AssetThumbnail(
-                  asset: medias[index],
-                  thumb: _mediaThumb[medias[index].id],
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    // A grid view with 3 items per row
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    crossAxisCount: 3,
+                  ),
+                  itemCount: medias.length,
+                  itemBuilder: (_, index) {
+                    return UploadIndicatorWidget(
+                      progress: _mediaProgress[medias[index].id] ?? 0,
+                      uploaded: medias[index].isUploaded,
+                      child: AssetThumbnail(
+                        asset: medias[index],
+                        thumb: _mediaThumb[medias[index].id],
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         );
       },
     );
@@ -178,6 +177,7 @@ class _GalleryFragmentState extends State<GalleryFragment> {
       }
     }
   }
+
   void uploadAll() {
     medias.where((media) => !media.isUploaded).forEach((media) async {
       final res = await _provider.saveFile(media.path, (count, total) {
@@ -197,8 +197,6 @@ class _GalleryFragmentState extends State<GalleryFragment> {
     });
   }
 }
-}
-
 
 class AssetThumbnail extends StatelessWidget {
   const AssetThumbnail({
