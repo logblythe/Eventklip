@@ -7,8 +7,8 @@ import 'package:eventklip/fragments/video_images_list_fragment/components/contex
 import 'package:eventklip/models/model.dart';
 import 'package:eventklip/screens/capture_screen.dart';
 import 'package:eventklip/screens/shared_preferences.dart';
-import 'package:eventklip/ui/widgets/asset_thumbnail.dart';
 import 'package:eventklip/ui/widgets/context_menu.dart';
+import 'package:eventklip/ui/widgets/upload_indicator_widget.dart';
 import 'package:eventklip/utils/utility.dart';
 import 'package:eventklip/view_models/qr_user_state.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +25,7 @@ class _GalleryFragmentState extends State<GalleryFragment> {
   List<Media> medias = [];
   Map<int, double> _mediaProgress = {};
   Map<int, Uint8List> _mediaThumb = {};
+
   QrUserState _provider;
 
   @override
@@ -116,28 +117,32 @@ class _GalleryFragmentState extends State<GalleryFragment> {
                   child: Container())
             ],
           ),
-          body: medias.isEmpty
+          body:
+          medias.isEmpty
               ? NoFolderWidget(
-                  title: 'No media found',
-                  subtitle:
-                      'Images/Videos will be visible once you start uploading',
-                )
+            title: 'No media found',
+            subtitle:
+            'Images/Videos will be visible once you start uploading',
+          )
               : GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    // A grid view with 3 items per row
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                    crossAxisCount: 3,
-                  ),
-                  itemCount: medias.length,
-                  itemBuilder: (_, index) {
-                    return AssetThumbnail(
-                      thumb: _mediaThumb[medias[index].id],
-                      asset: medias[index],
-                      key: ValueKey(medias[index].id),
-                    );
-                  },
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              // A grid view with 3 items per row
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              crossAxisCount: 3,
+            ),
+            itemCount: medias.length,
+            itemBuilder: (_, index) {
+              return UploadIndicatorWidget(
+                progress: _mediaProgress[medias[index].id] ?? 0,
+                uploaded: medias[index].isUploaded,
+                child: AssetThumbnail(
+                  asset: medias[index],
+                  thumb: _mediaThumb[medias[index].id],
                 ),
+              );
+            },
+          ),
         );
       },
     );
@@ -156,24 +161,23 @@ class _GalleryFragmentState extends State<GalleryFragment> {
           isUploaded: false,
           path: file.path);
       int mediaId = await _media.save();
-      // final res = await _provider.saveFile(file.path, (count, total) {
-      //   setState(() {
-      //     double progress = count / total;
-      //     if (_mediaProgress.containsKey(mediaId)) {
-      //       _mediaProgress[mediaId] = progress;
-      //     } else {
-      //       _mediaProgress.addAll({mediaId: progress});
-      //     }
-      //   });
-      // });
-      // if (res.success) {
-      //   _media.id = mediaId;
-      //   _media.isUploaded = true;
-      //   _media.save();
-      // }
+      final res = await _provider.saveFile(file.path, (count, total) {
+        setState(() {
+          double progress = count / total;
+          if (_mediaProgress.containsKey(mediaId)) {
+            _mediaProgress[mediaId] = progress;
+          } else {
+            _mediaProgress.addAll({mediaId: progress});
+          }
+        });
+      });
+      if (res.success) {
+        _media.id = mediaId;
+        _media.isUploaded = true;
+        _media.save();
+      }
     }
   }
-
   void uploadAll() {
     medias.where((media) => !media.isUploaded).forEach((media) async {
       final res = await _provider.saveFile(media.path, (count, total) {
@@ -191,6 +195,67 @@ class _GalleryFragmentState extends State<GalleryFragment> {
         media.save();
       }
     });
+  }
+}
+}
+
+
+class AssetThumbnail extends StatelessWidget {
+  const AssetThumbnail({
+    Key key,
+    @required this.asset,
+    this.thumb,
+  }) : super(key: key);
+
+  final Media asset;
+  final Uint8List thumb;
+
+  @override
+  Widget build(BuildContext context) {
+    // We're using a FutureBuilder since thumbData is a future
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) {
+              if (asset.mediaType == MediaTypeImage) {
+                // If this is an image, navigate to ImageScreen
+                return ImageScreen(imageFile: File(asset.path));
+              } else {
+                // if it's not, navigate to VideoScreen
+                return VideoScreen(videoFile: File(asset.path));
+              }
+            },
+          ),
+        );
+      },
+      child: Stack(
+        children: [
+          // Wrap the image in a Positioned.fill to fill the space
+          Positioned.fill(
+            child: asset.mediaType == MediaTypeImage
+                ? Image.file(
+                    File(asset.path),
+                    fit: BoxFit.fitWidth,
+                  )
+                : Image.memory(
+                    thumb,
+                    fit: BoxFit.fitWidth,
+                  ),
+          ),
+          // Display a Play icon if the asset is a video
+          if (asset.mediaType == MediaTypeVideo)
+            Center(
+              child: Icon(
+                Icons.play_circle_fill,
+                size: 42,
+                color: Colors.white,
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }
 
