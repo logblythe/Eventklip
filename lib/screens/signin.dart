@@ -31,8 +31,8 @@ class SignInScreenState extends State<SignInScreen> {
   FocusNode passFocus = FocusNode();
   FocusNode emailFocus = FocusNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController(text: "Boxklip@123");
+  TextEditingController emailController = TextEditingController(text:"superadmin@boxklip.com");
   bool passwordVisible = false;
   bool isLoading = false;
 

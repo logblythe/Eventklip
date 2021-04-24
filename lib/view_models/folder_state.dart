@@ -51,16 +51,11 @@ class FolderState with ChangeNotifier {
     }
   }
 
-  Future<void> createFolder(String name, String description,
-      {String parentFolder}) async {
+  Future<void> createFolder(Map<String, dynamic> payload) async {
     _loading = true;
     notifyListeners();
-    final data = {
-      "name": name,
-      'description': description,
-    };
     try {
-      _createFolderModel = await _foldersApi.createFolder(data);
+      _createFolderModel = await _foldersApi.createFolder(payload);
     } catch (e) {
       print('error $e');
     } finally {

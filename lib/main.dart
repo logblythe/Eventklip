@@ -3,6 +3,7 @@ import 'package:eventklip/di/injection.dart';
 import 'package:eventklip/screens/capture_screen.dart';
 import 'package:eventklip/screens/privacy_policy_screen.dart';
 import 'package:eventklip/screens/qr_users_home_screen.dart';
+import 'package:eventklip/screens/v2/dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -36,11 +37,10 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (_) => EventklipAppState("en", isDarkMode: true),
+        create: (_) => EventklipAppState("en", isDarkMode: false),
         child:
             Consumer<EventklipAppState>(builder: (context, provider, builder) {
           return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -49,8 +49,38 @@ class MyApp extends StatelessWidget {
             ),
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
-              theme: AppTheme.darkTheme,
-              darkTheme: AppTheme.darkTheme,
+              // theme: AppTheme.darkTheme,
+              // darkTheme: AppTheme.darkTheme,
+              theme: ThemeData(
+                primaryColor: Color(0xFF6C62FC),
+                accentColor: Color(0xFF6C62FC),
+                fontFamily: 'Poppins',
+                textTheme: TextTheme(
+                    headline1: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500),
+                    headline2: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                    headline3: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500),
+                    bodyText1: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w300),
+                    bodyText2: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300),
+                    caption: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300)),
+              ),
               supportedLocales: [
                 Locale('en', ''),
                 Locale('fr', ''),
@@ -71,7 +101,7 @@ class MyApp extends StatelessWidget {
               locale: provider.locale,
               themeMode:
                   provider.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-              home: SplashScreen(),
+              home: Dashboard(),
               routes: <String, WidgetBuilder>{
                 OnBoardingScreen.tag: (BuildContext context) =>
                     OnBoardingScreen(),
@@ -79,7 +109,8 @@ class MyApp extends StatelessWidget {
                 ChangePasswordScreen.tag: (BuildContext context) =>
                     ChangePasswordScreen(),
                 HomeScreen.tag: (BuildContext context) => HomeScreen(),
-                QrUsersHomeScreen.tag: (BuildContext context) => QrUsersHomeScreen(),
+                QrUsersHomeScreen.tag: (BuildContext context) =>
+                    QrUsersHomeScreen(),
                 AccountSettingsScreen.tag: (BuildContext context) =>
                     AccountSettingsScreen(),
                 HelpScreen.tag: (BuildContext context) => HelpScreen(),

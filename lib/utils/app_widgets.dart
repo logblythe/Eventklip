@@ -640,18 +640,18 @@ Widget viewCountWidget(context, int viewCount) {
   );
 }
 
-Widget formField(context, hint,
+Widget formField(context, label,
     {isEnabled = true,
     isDummy = false,
     controller,
     isPasswordVisible = false,
     isPassword = false,
-      readOnly = false,
-      showCursor=true,
+    readOnly = false,
+    showCursor = true,
     keyboardType = TextInputType.text,
     FormFieldValidator<String> validator,
     onSaved,
-    List<TextInputFormatter>  inputFormatters,
+    List<TextInputFormatter> inputFormatters,
     textInputAction = TextInputAction.next,
     FocusNode focusNode,
     FocusNode nextFocus,
@@ -659,61 +659,78 @@ Widget formField(context, hint,
     String initialValue,
     maxLine = 1,
     suffixIconSelector,
+    maxLength,
+    hint,
+    isRequired = false,
     onTap}) {
-  return TextFormField(
-    onTap: onTap,
-    inputFormatters: inputFormatters,
-    controller: controller,
-    obscureText: isPassword && !isPasswordVisible,
-    readOnly: readOnly,
-    showCursor: showCursor,
-    cursorColor: Theme.of(context).primaryColor,
-    maxLines: maxLine,
-    keyboardType: keyboardType,
-    validator: validator,
-    enabled: isEnabled,
-    onSaved: onSaved,
-    initialValue: initialValue,
-    textInputAction: textInputAction,
-    focusNode: focusNode,
-    onFieldSubmitted: (arg) {
-      if (nextFocus != null) {
-        FocusScope.of(context).requestFocus(nextFocus);
-      }
-    },
-    decoration: InputDecoration(
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: Theme.of(context).primaryColor),
-      ),
-      enabledBorder: UnderlineInputBorder(
-        borderSide:
-            BorderSide(color: Theme.of(context).textTheme.headline6.color),
-      ),
-      labelText: keyString(context, hint),
-      labelStyle: TextStyle(
+  return Stack(
+    children: [
+      TextFormField(
+        maxLength: maxLength,
+        onTap: onTap,
+        inputFormatters: inputFormatters,
+        controller: controller,
+        obscureText: isPassword && !isPasswordVisible,
+        readOnly: readOnly,
+        showCursor: showCursor,
+        cursorColor: Theme.of(context).primaryColor,
+        maxLines: maxLine,
+        keyboardType: keyboardType,
+        validator: validator,
+        enabled: isEnabled,
+        onSaved: onSaved,
+        initialValue: initialValue,
+        textInputAction: textInputAction,
+        focusNode: focusNode,
+        onFieldSubmitted: (arg) {
+          if (nextFocus != null) {
+            FocusScope.of(context).requestFocus(nextFocus);
+          }
+        },
+        decoration: InputDecoration(
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Theme.of(context).primaryColor),
+          ),
+          labelText: keyString(context, label),
+          labelStyle: TextStyle(fontSize: ts_medium_small, color: Colors.grey),
+          hintText: hint,
+          hintStyle: TextStyle(fontSize: ts_medium_small, color: Colors.grey),
+          suffixIcon: isPassword
+              ? GestureDetector(
+                  onTap: suffixIconSelector,
+                  child: new Icon(
+                    suffixIcon,
+                    color: Theme.of(context).primaryColor,
+                    size: 20,
+                  ),
+                )
+              : Icon(
+                  suffixIcon,
+                  color: Theme.of(context).primaryColor,
+                  size: 20,
+                ),
+          contentPadding: new EdgeInsets.only(bottom: 2.0),
+        ),
+        style: TextStyle(
           fontSize: ts_normal,
-          color: Theme.of(context).textTheme.headline6.color),
-      suffixIcon: isPassword
-          ? GestureDetector(
-              onTap: suffixIconSelector,
-              child: new Icon(
-                suffixIcon,
-                color: Theme.of(context).primaryColor,
-                size: 20,
-              ),
-            )
-          : Icon(
-              suffixIcon,
-              color: Theme.of(context).primaryColor,
-              size: 20,
-            ),
-      contentPadding: new EdgeInsets.only(bottom: 2.0),
-    ),
-    style: TextStyle(
-        fontSize: ts_normal,
-        color: isDummy
-            ? Colors.transparent
-            : Theme.of(context).textTheme.headline6.color,
-        fontFamily: font_regular),
+          color: isDummy
+              ? Colors.transparent
+              : Theme.of(context).textTheme.headline6.color,
+        ),
+        buildCounter: (BuildContext context,
+                {currentLength, maxLength, isFocused}) =>
+            null,
+      ),
+      Positioned(
+        right: 0,
+        child: isRequired
+            ? Text('*',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1
+                    .copyWith(color: Colors.red))
+            : Container(),
+      ),
+    ],
   );
 }

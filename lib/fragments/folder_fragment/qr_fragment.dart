@@ -6,7 +6,7 @@ import 'package:eventklip/models/folder_model.dart';
 import 'package:eventklip/view_models/folder_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_cupertino_date_picker_fork/flutter_cupertino_date_picker_fork.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -179,13 +179,29 @@ class _QrFragmentState extends State<QrFragment> {
   void handleDateSelection(BuildContext context) {
     DatePicker.showDatePicker(
       context,
-      pickerTheme: DateTimePickerTheme(backgroundColor: Colors.grey),
-      onConfirm: (date, _) {
+      showTitleActions: true,
+      minTime: DateTime.now(),
+      maxTime: DateTime(2019, 6, 7),
+      onChanged: (date) {
+        print('change $date');
+      },
+      onConfirm: (date) {
         _expiryDate =
             DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(date.toUtc());
-        dateController.text = DateFormat('MM-dd-yyyy').format(date.toLocal());
+        dateController.text =
+            DateFormat('MM-dd-yyyy').format(date.toLocal());
       },
+      currentTime: DateTime.now(),
     );
+    // DatePicker.showDatePicker(
+    //   context,
+    //   pickerTheme: DateTimePickerTheme(backgroundColor: Colors.grey),
+    //   onConfirm: (date, _) {
+    //     _expiryDate =
+    //         DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(date.toUtc());
+    //     dateController.text = DateFormat('MM-dd-yyyy').format(date.toLocal());
+    //   },
+    // );
   }
 
   Future<void> handleCreateQr() async {

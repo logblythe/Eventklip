@@ -1,6 +1,7 @@
 class ApiEndPoints {
   // static const BASE_URL = "https://api.boxklip.com/api/";
-  static const BASE_URL = "https://devapi.boxklip.com/api/";
+  static const BASE_URL = "https://devapi.eventklip.com/api/";
+  
 
   ///auth and profile
   static const AUTHENTICATE = "${BASE_URL}UserControl/Token";

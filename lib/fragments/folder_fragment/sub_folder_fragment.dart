@@ -38,46 +38,47 @@ class _FolderEventDetailFragmentState extends State<FolderEventDetailFragment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBarLayout(
-          context,
-          widget.folder.name ?? "-",
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          actions: [
-            InkWell(child: Icon(Icons.qr_code), onTap: gotoQrScreen)
-                .paddingRight(12),
-            InkWell(child: Icon(Icons.question_answer), onTap: gotoQnAScreen)
-                .paddingRight(12),
-          ],
+      appBar: appBarLayout(
+        context,
+        widget.folder.name ?? "-",
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: colors.white),
+          onPressed: () => Navigator.of(context).pop(),
         ),
-        body: loading
-            ? Loader()
-            : RefreshIndicator(
-                onRefresh: getAllVideos,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    clientMedias.isEmpty
-                        ? emptyVideos()
-                        : Expanded(
-                            child: GridView.builder(
-                              itemBuilder: (context, position) {
-                                return ClientMediaItem(clientMedias[position]);
-                              },
-                              itemCount: clientMedias.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 2,
-                                childAspectRatio: 1,
-                              ),
+        actions: [
+          InkWell(child: Icon(Icons.qr_code), onTap: gotoQrScreen)
+              .paddingRight(12),
+          InkWell(child: Icon(Icons.question_answer), onTap: gotoQnAScreen)
+              .paddingRight(12),
+        ],
+      ),
+      body: loading
+          ? Loader()
+          : RefreshIndicator(
+              onRefresh: getAllVideos,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  clientMedias.isEmpty
+                      ? emptyVideos()
+                      : Expanded(
+                          child: GridView.builder(
+                            itemBuilder: (context, position) {
+                              return ClientMediaItem(clientMedias[position]);
+                            },
+                            itemCount: clientMedias.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 2,
+                              childAspectRatio: 1,
                             ),
-                          )
-                  ],
-                ),
-              ));
+                          ),
+                        )
+                ],
+              ),
+            ),
+    );
   }
 
   Widget emptyVideos() {
